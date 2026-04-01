@@ -3,30 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CestaAhorro - Optimizador de Compras</title>
+    <title>CestaAhorro - Optimizador Inteligente</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .5; }
-        }
-        .animate-pulse-fast { animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
 
     <header class="bg-blue-600 text-white p-6 shadow-md rounded-b-3xl">
         <div class="max-w-2xl mx-auto text-center">
             <h1 class="text-3xl font-bold mb-2">🛒 CestaAhorro</h1>
-            <p class="text-blue-100">Encontramos la combinación perfecta para que no pagues de más en envíos.</p>
+            <p class="text-blue-100">Optimizamos tu carrito unificando o dividiendo envíos para el máximo ahorro.</p>
         </div>
     </header>
 
     <main class="max-w-2xl mx-auto p-6 mt-4">
         
         <div id="search-section" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
-            <h2 class="text-lg font-semibold mb-2">¿Qué productos buscas hoy?</h2>
-            <p class="text-sm text-slate-500 mb-4">Ejemplo de prueba: <b>npro enzimtolerance</b>, <b>alflores dual action</b>, <b>paracetamol</b></p>
+            <h2 class="text-lg font-semibold mb-2">¿Qué necesitas hoy?</h2>
+            <p class="text-sm text-slate-500 mb-4">Ejemplo de prueba: <b>npro enzimtolerance</b>, <b>alflorex dual action</b>, <b>paracetamol</b></p>
             
             <div id="inputs-container" class="space-y-3 mb-4"></div>
             
@@ -35,15 +28,9 @@
             </button>
 
             <button onclick="startOptimization()" class="w-full bg-green-500 hover:bg-green-600 text-white text-lg font-bold py-4 rounded-xl shadow-lg transition-transform transform active:scale-95 flex justify-center items-center gap-2">
-                ✨ Buscar y Comparar Opciones
+                ✨ Calcular Mejor Combinación
             </button>
             <p id="error-msg" class="text-red-500 text-sm mt-3 text-center hidden"></p>
-        </div>
-
-        <div id="loading-section" class="hidden text-center py-12">
-            <div class="text-6xl mb-4 animate-spin inline-block">⚙️</div>
-            <h3 class="text-xl font-bold text-slate-700 mb-2">Cruzando datos...</h3>
-            <p class="text-slate-500 animate-pulse-fast">Buscando tiendas con coincidencias y analizando envíos.</p>
         </div>
 
         <div id="results-section" class="hidden"></div>
@@ -59,7 +46,7 @@
 
         const catalogo = {
             "npro enzimtolerance": { "Farmacia Soluciones": 26.50, "Parafarmacia Ahorro": 28.00, "BioSalud Online": 25.90 },
-            "alflores dual action": { "Farmacia Soluciones": 19.00, "Parafarmacia Ahorro": 18.50, "BioSalud Online": 19.90 },
+            "alflorex dual action": { "Farmacia Soluciones": 19.00, "Parafarmacia Ahorro": 18.50, "BioSalud Online": 19.90 },
             "paracetamol": { "Farmacia Soluciones": 2.50, "Parafarmacia Ahorro": 1.90, "BioSalud Online": 2.20 }
         };
 
@@ -76,10 +63,10 @@
             div.id = `row-${inputCount}`;
             div.innerHTML = `
                 <div class="bg-slate-100 text-slate-400 font-bold px-3 py-3 rounded-xl">${inputCount}</div>
-                <input type="text" class="product-input flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg" placeholder="Nombre del producto...">
+                <input type="text" class="product-input flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg" placeholder="Producto...">
                 <div class="flex items-center bg-white border border-slate-300 rounded-xl overflow-hidden">
-                    <span class="px-3 text-slate-500 font-medium bg-slate-50 border-r border-slate-200 py-3">Cant.</span>
-                    <input type="number" class="qty-input w-16 px-2 py-3 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-bold" value="1" min="1" max="20">
+                    <span class="px-2 text-slate-500 font-medium bg-slate-50 border-r border-slate-200 py-3">Cant.</span>
+                    <input type="number" class="qty-input w-16 px-2 py-3 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-bold" value="1" min="1">
                 </div>
                 ${inputCount > 1 ? `<button onclick="removeInputRow('${div.id}')" class="text-red-400 hover:text-red-600 p-2">🗑️</button>` : `<div class="w-8"></div>`}
             `;
@@ -98,14 +85,11 @@
                 const qtyInput = row.querySelector('.qty-input');
                 const val = input.value.trim().toLowerCase();
                 const qty = parseInt(qtyInput.value) || 1;
-
-                if (val !== '') {
-                    productosBuscados.push({ nombre: val, cantidad: qty });
-                }
+                if (val !== '') productosBuscados.push({ nombre: val, cantidad: qty });
             });
 
             if (productosBuscados.length === 0) {
-                errorMsg.textContent = "Por favor, escribe al menos un producto.";
+                errorMsg.textContent = "Añade al menos un producto.";
                 errorMsg.classList.remove('hidden'); return;
             }
 
@@ -117,147 +101,136 @@
             }
 
             document.getElementById('search-section').classList.add('hidden');
-            document.getElementById('loading-section').classList.remove('hidden');
-
-            const opcionesGeneradas = calcularMejorCesta(productosBuscados);
-
-            setTimeout(() => {
-                document.getElementById('loading-section').classList.add('hidden');
-                mostrarResultados(opcionesGeneradas);
-            }, 1000);
+            const opciones = calcularMejorCesta(productosBuscados);
+            mostrarResultados(opciones);
         }
 
         function calcularMejorCesta(listaProductos) {
             let opciones = [];
             const nombresTiendas = Object.keys(tiendas);
 
+            // 1. Opciones TODO EN UNA TIENDA
             nombresTiendas.forEach(tienda => {
-                let tieneTodos = true;
-                let subtotal = 0;
-                let productosTienda = [];
-
+                let tieneTodos = true; let subtotal = 0; let dist = [];
                 listaProductos.forEach(item => {
-                    const prod = item.nombre;
-                    const cant = item.cantidad;
-
-                    if (catalogo[prod] && catalogo[prod][tienda] !== undefined) {
-                        const precioUnitario = catalogo[prod][tienda];
-                        const precioTotalProducto = precioUnitario * cant;
-                        subtotal += precioTotalProducto;
-                        
-                        productosTienda.push({ 
-                            nombre: prod, 
-                            precioUnitario: precioUnitario,
-                            cantidad: cant,
-                            precioTotal: precioTotalProducto
-                        });
-                    } else {
-                        tieneTodos = false;
-                    }
+                    if (catalogo[item.nombre] && catalogo[item.nombre][tienda] !== undefined) {
+                        let costoLinea = catalogo[item.nombre][tienda] * item.cantidad;
+                        subtotal += costoLinea;
+                        dist.push({nombre: item.nombre, cant: item.cantidad, precio: costoLinea, tienda: tienda});
+                    } else { tieneTodos = false; }
                 });
 
                 if (tieneTodos) {
-                    let costeEnvio = subtotal >= tiendas[tienda].envioGratisDesde ? 0 : tiendas[tienda].envio;
+                    let envio = subtotal >= tiendas[tienda].envioGratisDesde ? 0 : tiendas[tienda].envio;
                     opciones.push({
-                        tienda: tienda,
-                        productos: productosTienda,
-                        subtotal: subtotal,
-                        envio: costeEnvio,
-                        total: subtotal + costeEnvio,
-                        umbralEnvio: tiendas[tienda].envioGratisDesde
+                        tipo: 'unica', titulo: tienda,
+                        subtotal: subtotal, envio: envio, total: subtotal + envio,
+                        distribucion: dist,
+                        resumenEnvios: [{t: tienda, s: subtotal, e: envio, u: tiendas[tienda].envioGratisDesde}]
                     });
                 }
             });
 
+            // 2. Opciones DIVIDIENDO EN 2 TIENDAS
+            for (let i = 0; i < nombresTiendas.length; i++) {
+                for (let j = i + 1; j < nombresTiendas.length; j++) {
+                    let t1 = nombresTiendas[i]; let t2 = nombresTiendas[j];
+                    let valido = true; let sub1 = 0; let sub2 = 0; let dist = [];
+
+                    listaProductos.forEach(item => {
+                        let p1 = catalogo[item.nombre] && catalogo[item.nombre][t1] !== undefined ? catalogo[item.nombre][t1] : Infinity;
+                        let p2 = catalogo[item.nombre] && catalogo[item.nombre][t2] !== undefined ? catalogo[item.nombre][t2] : Infinity;
+
+                        if (p1 === Infinity && p2 === Infinity) { valido = false; }
+                        else if (p1 <= p2) {
+                            let costoLinea = p1 * item.cantidad; sub1 += costoLinea;
+                            dist.push({nombre: item.nombre, cant: item.cantidad, precio: costoLinea, tienda: t1});
+                        } else {
+                            let costoLinea = p2 * item.cantidad; sub2 += costoLinea;
+                            dist.push({nombre: item.nombre, cant: item.cantidad, precio: costoLinea, tienda: t2});
+                        }
+                    });
+
+                    // Solo guardar si realmente dividimos el pedido (ambas tiendas se usan)
+                    if (valido && sub1 > 0 && sub2 > 0) {
+                        let env1 = sub1 >= tiendas[t1].envioGratisDesde ? 0 : tiendas[t1].envio;
+                        let env2 = sub2 >= tiendas[t2].envioGratisDesde ? 0 : tiendas[t2].envio;
+                        opciones.push({
+                            tipo: 'dividida', titulo: `${t1} + ${t2}`,
+                            subtotal: sub1 + sub2, envio: env1 + env2, total: sub1 + sub2 + env1 + env2,
+                            distribucion: dist,
+                            resumenEnvios: [
+                                {t: t1, s: sub1, e: env1, u: tiendas[t1].envioGratisDesde},
+                                {t: t2, s: sub2, e: env2, u: tiendas[t2].envioGratisDesde}
+                            ]
+                        });
+                    }
+                }
+            }
+
+            // Ordenar por el precio final más barato
             opciones.sort((a, b) => a.total - b.total);
             return opciones;
         }
 
         function mostrarResultados(opciones) {
             const resultsSection = document.getElementById('results-section');
-            resultsSection.innerHTML = '';
+            if (opciones.length === 0) return;
 
-            if (opciones.length === 0) {
-                resultsSection.innerHTML = `<div class="bg-red-50 p-6 rounded-2xl text-center"><h2 class="text-xl font-bold text-red-800 mb-2">No hay coincidencias</h2><p class="text-red-700 mb-4">Ninguna tienda tiene todos estos productos juntos.</p><button onclick="resetApp()" class="text-blue-600 underline">Volver</button></div>`;
-                resultsSection.classList.remove('hidden'); return;
-            }
+            // Mostrar solo el top 3 de combinaciones para no saturar al usuario
+            const topOpciones = opciones.slice(0, 3);
+            let html = '';
 
-            const ganadora = opciones[0];
-            let listaItemsGanadora = ganadora.productos.map(p => `
-                <li class="flex justify-between border-b border-green-100 pb-2 capitalize text-green-900">
-                    <span><b>${p.cantidad}x</b> ${p.nombre} <span class="text-sm text-green-600">(${p.precioUnitario.toFixed(2)}€/u)</span></span> 
-                    <span class="font-medium">${p.precioTotal.toFixed(2)}€</span>
-                </li>
-            `).join('');
+            topOpciones.forEach((opt, index) => {
+                let esGanadora = index === 0;
+                let bgColor = esGanadora ? 'bg-green-50 border-green-300' : 'bg-white border-slate-200';
+                let textColor = esGanadora ? 'text-green-800' : 'text-slate-800';
 
-            let html = `
-                <div class="bg-green-50 border border-green-200 p-6 rounded-2xl mb-6 shadow-sm">
-                    <div class="text-center">
-                        <span class="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-3 inline-block">🏆 Ganadora Absoluta</span>
-                        <h2 class="text-2xl font-bold text-green-800 mb-1">${ganadora.tienda}</h2>
-                        <p class="text-green-700 mb-4">Es la opción más barata en total.</p>
-                        <div class="text-4xl font-black text-green-900 mb-2 text-center">${ganadora.total.toFixed(2)}€</div>
+                html += `
+                <div class="${bgColor} border p-6 rounded-2xl mb-6 shadow-sm relative">
+                    ${esGanadora ? `<div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wide">🏆 Opción más barata</div>` : ''}
+                    
+                    <div class="text-center mt-2">
+                        <span class="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-2 inline-block ${opt.tipo === 'unica' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">
+                            ${opt.tipo === 'unica' ? '📦 1 Solo Paquete' : '✂️ Compra Dividida en 2'}
+                        </span>
+                        <h2 class="text-xl font-bold ${textColor} mb-1">${opt.titulo}</h2>
+                        <div class="text-4xl font-black ${textColor} mb-4">${opt.total.toFixed(2)}€</div>
                     </div>
-                    
-                    <ul class="mt-4 mb-4 space-y-2 bg-white/50 p-4 rounded-xl">
-                        ${listaItemsGanadora}
-                    </ul>
-            `;
+                `;
 
-            if (ganadora.envio === 0) {
-                html += `<p class="text-sm font-bold text-blue-600 text-center">✅ ¡Incluye envío gratis!</p>`;
-            } else {
-                let faltaParaGratis = ganadora.umbralEnvio - ganadora.subtotal;
-                html += `<p class="text-sm text-slate-600 text-center">El envío cuesta ${ganadora.envio.toFixed(2)}€. <br><span class="font-bold text-orange-500">💡 Añade ${faltaParaGratis.toFixed(2)}€ a tu cesta para que el envío sea GRATIS.</span></p>`;
-            }
-            
-            html += `<button class="w-full bg-green-600 text-white hover:bg-green-700 py-3 rounded-xl font-medium transition-colors mt-4">Comprar en ${ganadora.tienda} 👉</button></div>`;
-
-            if (opciones.length > 1) {
-                html += `<h3 class="font-bold text-lg mt-8 mb-4 border-b pb-2 text-slate-700">Otras alternativas válidas:</h3><div class="space-y-4">`;
-                
-                for (let i = 1; i < opciones.length; i++) {
-                    const opt = opciones[i];
-                    
-                    html += `<div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 relative">`;
-                    
-                    if (opt.envio === 0) {
-                        html += `<div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-bl-lg">ENVÍO GRATIS</div>`;
-                    }
-
-                    html += `
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="font-bold text-lg">${opt.tienda}</h4>
-                            <span class="font-black text-xl text-slate-800">${opt.total.toFixed(2)}€</span>
-                        </div>
-                    `;
-
-                    if (opt.envio === 0) {
-                        html += `<p class="text-sm text-slate-500 mb-3">La opción más barata con los gastos de envío ya anulados.</p>`;
-                    } else {
-                        let falta = opt.umbralEnvio - opt.subtotal;
+                opt.resumenEnvios.forEach(resumen => {
+                    let productosDeEstaTienda = opt.distribucion.filter(p => p.tienda === resumen.t);
+                    if (productosDeEstaTienda.length > 0) {
                         html += `
-                            <p class="text-sm text-slate-500 mb-1">Productos: ${opt.subtotal.toFixed(2)}€ | Envío: ${opt.envio.toFixed(2)}€</p>
-                            <div class="bg-orange-50 border border-orange-100 text-orange-700 text-sm p-2 rounded-lg mb-3">
-                                🔔 Te faltan <b>${falta.toFixed(2)}€</b> para anular los gastos de envío.
-                            </div>
-                        `;
+                        <div class="bg-white/60 p-4 rounded-xl mb-3 border border-slate-100">
+                            <h4 class="font-bold text-sm text-slate-700 border-b pb-1 mb-2">Comprar en ${resumen.t}:</h4>
+                            <ul class="space-y-1 mb-2">`;
+                        
+                        productosDeEstaTienda.forEach(p => {
+                            html += `<li class="flex justify-between text-sm text-slate-600 capitalize">
+                                <span><b>${p.cant}x</b> ${p.nombre}</span> <span>${p.precio.toFixed(2)}€</span>
+                            </li>`;
+                        });
+                        
+                        html += `</ul>`;
+                        
+                        if (resumen.e === 0) {
+                            html += `<p class="text-xs font-bold text-green-600 bg-green-100 inline-block px-2 py-1 rounded">✅ Envío Gratis superado</p>`;
+                        } else {
+                            html += `<p class="text-xs text-orange-600">⚠️ Envío: ${resumen.e.toFixed(2)}€ (Faltan ${(resumen.u - resumen.s).toFixed(2)}€ para gratis)</p>`;
+                        }
+                        html += `</div>`;
                     }
-                    html += `<button class="w-full border-2 border-slate-200 text-slate-600 hover:border-blue-600 hover:text-blue-600 py-2 rounded-lg font-medium transition-colors">Ver cesta en ${opt.tienda}</button></div>`;
-                }
+                });
+                
                 html += `</div>`;
-            }
+            });
 
-            html += `<button onclick="resetApp()" class="mt-8 text-slate-500 hover:text-slate-800 underline w-full text-center">Volver al buscador</button>`;
+            html += `<button onclick="location.reload()" class="mt-4 text-slate-500 hover:text-slate-800 underline w-full text-center pb-8">Volver al buscador</button>`;
             
             resultsSection.innerHTML = html;
             resultsSection.classList.remove('hidden');
-        }
-
-        function resetApp() {
-            document.getElementById('results-section').classList.add('hidden');
-            document.getElementById('search-section').classList.remove('hidden');
-            errorMsg.classList.add('hidden');
         }
     </script>
 </body>
