@@ -3,27 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba Cesta</title>
+    <title>CestaAhorro - Optimizador de Compras</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .animate-pulse-fast { animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
 </head>
-<body class="bg-slate-100 p-4">
-    <div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg">
-        <h1 class="text-2xl font-bold text-blue-600 mb-4 text-center">🛒 CestaAhorro Test</h1>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <header class="bg-blue-600 text-white p-6 shadow-md rounded-b-3xl">
+        <div class="max-w-2xl mx-auto text-center">
+            <h1 class="text-3xl font-bold mb-2">🛒 CestaAhorro</h1>
+            <p class="text-blue-100">Encontramos la combinación perfecta para que no pagues de más en envíos.</p>
+        </div>
+    </header>
+
+    <main class="max-w-2xl mx-auto p-6 mt-4">
         
-        <div class="space-y-4">
-            <div class="flex gap-2">
-                <input type="text" class="p-3 border rounded-lg w-full" placeholder="Producto 1 (ej. paracetamol)">
-            </div>
-            <div class="flex gap-2">
-                <input type="text" class="p-3 border rounded-lg w-full" placeholder="Producto 2 (ej. tiritas)">
-            </div>
+        <div id="search-section" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
+            <h2 class="text-lg font-semibold mb-2">¿Qué productos buscas hoy?</h2>
+            <p class="text-sm text-slate-500 mb-4">Ejemplo de prueba: <b>npro enzimtolerance</b>, <b>alflores dual action</b>, <b>paracetamol</b></p>
+            
+            <div id="inputs-container" class="space-y-3 mb-4"></div>
+            
+            <button onclick="addInputRow()" class="text-blue-600 hover:text-blue-800 font-medium text-sm mb-6 flex items-center gap-1">
+                + Añadir otro producto
+            </button>
+
+            <button onclick="startOptimization()" class="w-full bg-green-500 hover:bg-green-600 text-white text-lg font-bold py-4 rounded-xl shadow-lg transition-transform transform active:scale-95 flex justify-center items-center gap-2">
+                ✨ Buscar y Comparar Opciones
+            </button>
+            <p id="error-msg" class="text-red-500 text-sm mt-3 text-center hidden"></p>
         </div>
 
-        <button onclick="alert('¡La página está conectada y funcionando!')" class="w-full mt-6 bg-green-500 text-white font-bold py-4 rounded-lg">
-            PROBAR BOTÓN VERDE
-        </button>
-        
-        <p class="text-xs text-center mt-4 text-slate-400">Si ves las cajas y el botón, ¡lo logramos!</p>
-    </div>
+        <div id="loading-section" class="hidden text-center py-12">
+            <div class="text-6xl mb-4 animate-spin inline-block">⚙️</div>
+            <h3 class="text-xl font-bold text-slate-700 mb-2">Cruzando datos...</h3>
+            <p class="text-slate-500 animate-pulse-fast">Buscando tiendas con coincidencias y analizando envíos.</p>
+        </div>
+
+        <div id="results-section" class="hidden"></div>
+
+    </main>
+
+    <script>
+        const tiendas = {
+            "Farmacia Soluciones": { envio: 4.00, envioGratisDesde: 45.00 },
+            "Parafarmacia Ahorro": { envio: 2.99, envioGratisDesde: 35.00 },
+            "BioSalud Online": { envio: 3.50, envioGratisDesde: 50.00 }
+        };
+
+        const catalogo = {
+            "npro enzimtolerance": { "Farmacia Soluciones": 26.50, "Parafarmacia Ahorro": 28.00, "BioSalud Online": 25.90 },
+            "alflores dual action": { "Farmacia Soluciones": 19.00, "Parafarmacia Ahorro": 18.50, "BioSalud Online": 19.90 },
+            "paracetamol": { "Farmacia Soluciones": 2.50, "Parafarmacia Ahorro": 1.90, "BioSalud Online": 2.20 }
+        };
+
+        const inputsContainer = document.getElementById('inputs-container');
+        const errorMsg = document.getElementById('error-msg');
+        let inputCount = 0;
+
+        window.onload = () => { addInputRow(); addInputRow(); };
+
+        function addInputRow() {
+            inputCount++;
+            const div = document.createElement('div');
+            div.className = 'flex gap-2 items-center';
+            div.id = `row-${inputCount}`;
+            div.innerHTML = `
+                <div class="bg-slate-100 text-slate-400 font-bold px-3 py-3 rounded-xl">${inputCount}</div>
+                <input type="text" class="product-input flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg" placeholder="Nombre del producto...">
+                <div class="flex items-center bg-white border border-slate-300 rounded-xl overflow-hidden">
+                    <span class="px-3 text-slate-500 font-medium bg-slate-50 border-r border-slate-200 py-3">Cant.</span>
+                    <input type="number" class="qty-input w-16 px-2 py-3 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-bold" value="1" min="1" max="20">
+                </div>
+                ${inputCount > 1 ? `<button onclick="removeInputRow('${div.id}')" class="text-red-400 hover:text-red-600 p-2">🗑️</button>` : `<div class="w-8"></div>`}
+            `;
+            inputsContainer.appendChild(div);
+        }
+
+        function removeInputRow(rowId) { document.getElementById(rowId).remove(); }
+
+        function startOptimization() {
+            errorMsg.classList.add('hidden');
+            const rows = document.querySelectorAll('#inputs-container > div');
+            let productosBuscados = [];
+            
+            rows.forEach(row => {
+                const input = row.querySelector('.product-input');
+                const qtyInput = row.querySelector('.qty-input');
+                const val = input.value.trim().toLowerCase();
+                const qty = parseInt(qtyInput.value) || 1;
+
+                if (val !== '') {
+                    productosBuscados.push({ nombre: val, cantidad: qty });
+                }
+            });
+
+            if (productosBuscados.length === 0) {
+                errorMsg.textContent = "Por favor, escribe al menos un producto.";
+                errorMsg.classList.remove('hidden'); return;
+            }
+
+            for (let item of productosBuscados) {
+                if (!catalogo[item.nombre]) {
+                    errorMsg.textContent = `No encuentro "${item.nombre}". Usa los del ejemplo.`;
+                    errorMsg.classList.remove('hidden'); return;
+                }
+            }
+
+            document.getElementById('search-section').classList.add('hidden');
+            document.getElementById('loading-section').classList.remove('hidden');
+
+            const opcionesGeneradas = calcularMejorCesta(productosBuscados);
+
+            setTimeout(() => {
+                document.getElementById('loading-section').classList.add('hidden');
+                mostrarResultados(opcionesGeneradas);
+            }, 1000);
+        }
+
+        function calcularMejorCesta(listaProductos) {
+            let opciones = [];
+            const nombresTiendas = Object.keys(tiendas);
+
+            nombresTiendas.forEach(tienda => {
+                let tieneTodos = true;
+                let subtotal = 0;
+                let productosTienda = [];
+
+                listaProductos.forEach(item => {
+                    const prod = item.nombre;
+                    const cant = item.cantidad;
+
+                    if (catalogo[prod] && catalogo[prod][tienda] !== undefined) {
+                        const precioUnitario = catalogo[prod][tienda];
+                        const precioTotalProducto = precioUnitario * cant;
+                        subtotal += precioTotalProducto;
+                        
+                        productosTienda.push({ 
+                            nombre: prod, 
+                            precioUnitario: precioUnitario,
+                            cantidad: cant,
+                            precioTotal: precioTotalProducto
+                        });
+                    } else {
+                        tieneTodos = false;
+                    }
+                });
+
+                if (tieneTodos) {
+                    let costeEnvio = subtotal >= tiendas[tienda].envioGratisDesde ? 0 : tiendas[tienda].envio;
+                    opciones.push({
+                        tienda: tienda,
+                        productos: productosTienda,
+                        subtotal: subtotal,
+                        envio: costeEnvio,
+                        total: subtotal + costeEnvio,
+                        umbralEnvio: tiendas[tienda].envioGratisDesde
+                    });
+                }
+            });
+
+            opciones.sort((a, b) => a.total - b.total);
+            return opciones;
+        }
+
+        function mostrarResultados(opciones) {
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.innerHTML = '';
+
+            if (opciones.length === 0) {
+                resultsSection.innerHTML = `<div class="bg-red-50 p-6 rounded-2xl text-center"><h2 class="text-xl font-bold text-red-800 mb-2">No hay coincidencias</h2><p class="text-red-700 mb-4">Ninguna tienda tiene todos estos productos juntos.</p><button onclick="resetApp()" class="text-blue-600 underline">Volver</button></div>`;
+                resultsSection.classList.remove('hidden'); return;
+            }
+
+            const ganadora = opciones[0];
+            let listaItemsGanadora = ganadora.productos.map(p => `
+                <li class="flex justify-between border-b border-green-100 pb-2 capitalize text-green-900">
+                    <span><b>${p.cantidad}x</b> ${p.nombre} <span class="text-sm text-green-600">(${p.precioUnitario.toFixed(2)}€/u)</span></span> 
+                    <span class="font-medium">${p.precioTotal.toFixed(2)}€</span>
+                </li>
+            `).join('');
+
+            let html = `
+                <div class="bg-green-50 border border-green-200 p-6 rounded-2xl mb-6 shadow-sm">
+                    <div class="text-center">
+                        <span class="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-3 inline-block">🏆 Ganadora Absoluta</span>
+                        <h2 class="text-2xl font-bold text-green-800 mb-1">${ganadora.tienda}</h2>
+                        <p class="text-green-700 mb-4">Es la opción más barata en total.</p>
+                        <div class="text-4xl font-black text-green-900 mb-2 text-center">${ganadora.total.toFixed(2)}€</div>
+                    </div>
+                    
+                    <ul class="mt-4 mb-4 space-y-2 bg-white/50 p-4 rounded-xl">
+                        ${listaItemsGanadora}
+                    </ul>
+            `;
+
+            if (ganadora.envio === 0) {
+                html += `<p class="text-sm font-bold text-blue-600 text-center">✅ ¡Incluye envío gratis!</p>`;
+            } else {
+                let faltaParaGratis = ganadora.umbralEnvio - ganadora.subtotal;
+                html += `<p class="text-sm text-slate-600 text-center">El envío cuesta ${ganadora.envio.toFixed(2)}€. <br><span class="font-bold text-orange-500">💡 Añade ${faltaParaGratis.toFixed(2)}€ a tu cesta para que el envío sea GRATIS.</span></p>`;
+            }
+            
+            html += `<button class="w-full bg-green-600 text-white hover:bg-green-700 py-3 rounded-xl font-medium transition-colors mt-4">Comprar en ${ganadora.tienda} 👉</button></div>`;
+
+            if (opciones.length > 1) {
+                html += `<h3 class="font-bold text-lg mt-8 mb-4 border-b pb-2 text-slate-700">Otras alternativas válidas:</h3><div class="space-y-4">`;
+                
+                for (let i = 1; i < opciones.length; i++) {
+                    const opt = opciones[i];
+                    
+                    html += `<div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 relative">`;
+                    
+                    if (opt.envio === 0) {
+                        html += `<div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-bl-lg">ENVÍO GRATIS</div>`;
+                    }
+
+                    html += `
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-lg">${opt.tienda}</h4>
+                            <span class="font-black text-xl text-slate-800">${opt.total.toFixed(2)}€</span>
+                        </div>
+                    `;
+
+                    if (opt.envio === 0) {
+                        html += `<p class="text-sm text-slate-500 mb-3">La opción más barata con los gastos de envío ya anulados.</p>`;
+                    } else {
+                        let falta = opt.umbralEnvio - opt.subtotal;
+                        html += `
+                            <p class="text-sm text-slate-500 mb-1">Productos: ${opt.subtotal.toFixed(2)}€ | Envío: ${opt.envio.toFixed(2)}€</p>
+                            <div class="bg-orange-50 border border-orange-100 text-orange-700 text-sm p-2 rounded-lg mb-3">
+                                🔔 Te faltan <b>${falta.toFixed(2)}€</b> para anular los gastos de envío.
+                            </div>
+                        `;
+                    }
+                    html += `<button class="w-full border-2 border-slate-200 text-slate-600 hover:border-blue-600 hover:text-blue-600 py-2 rounded-lg font-medium transition-colors">Ver cesta en ${opt.tienda}</button></div>`;
+                }
+                html += `</div>`;
+            }
+
+            html += `<button onclick="resetApp()" class="mt-8 text-slate-500 hover:text-slate-800 underline w-full text-center">Volver al buscador</button>`;
+            
+            resultsSection.innerHTML = html;
+            resultsSection.classList.remove('hidden');
+        }
+
+        function resetApp() {
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('search-section').classList.remove('hidden');
+            errorMsg.classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
