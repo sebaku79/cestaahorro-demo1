@@ -226,3 +226,42 @@
                     }
 
                     html += `
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-lg">${opt.tienda}</h4>
+                            <span class="font-black text-xl text-slate-800">${opt.total.toFixed(2)}€</span>
+                        </div>
+                    `;
+
+                    if (opt.envio === 0) {
+                        html += `<p class="text-sm text-slate-500 mb-3">La opción más barata con los gastos de envío ya anulados.</p>`;
+                    } else {
+                        let falta = opt.umbralEnvio - opt.subtotal;
+                        html += `
+                            <p class="text-sm text-slate-500 mb-1">Productos: ${opt.subtotal.toFixed(2)}€ | Envío: ${opt.envio.toFixed(2)}€</p>
+                            <div class="bg-orange-50 border border-orange-100 text-orange-700 text-sm p-2 rounded-lg mb-3">
+                                🔔 Te faltan <b>${falta.toFixed(2)}€</b> para anular los gastos de envío.
+                            </div>
+                        `;
+                    }
+                    html += `<button class="w-full border-2 border-slate-200 text-slate-600 hover:border-blue-600 hover:text-blue-600 py-2 rounded-lg font-medium transition-colors">Ver cesta en ${opt.tienda}</button></div>`;
+                }
+                html += `</div>`;
+            }
+
+            html += `<button onclick="resetApp()" class="mt-8 text-slate-500 hover:text-slate-800 underline w-full text-center">Volver al buscador</button>`;
+            
+            resultsSection.innerHTML = html;
+            resultsSection.classList.remove('hidden');
+        }
+
+        function resetApp() {
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('search-section').classList.remove('hidden');
+            errorMsg.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
+                
+
+            
