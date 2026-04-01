@@ -5,32 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CestaAhorro - Optimizador Inteligente</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Ajuste para que los inputs no se vean gigantes en móvil */
+        input { font-size: 16px !important; } 
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
 
-    <header class="bg-blue-600 text-white p-6 shadow-md rounded-b-3xl">
-        <div class="max-w-2xl mx-auto text-center">
-            <h1 class="text-3xl font-bold mb-2">🛒 CestaAhorro</h1>
-            <p class="text-blue-100">Optimizamos tu carrito unificando o dividiendo envíos para el máximo ahorro.</p>
-        </div>
+    <header class="bg-blue-600 text-white p-5 shadow-md rounded-b-3xl text-center">
+        <h1 class="text-2xl font-bold mb-1">🛒 CestaAhorro</h1>
+        <p class="text-blue-100 text-sm">Ahorro máximo unificando o dividiendo pedidos.</p>
     </header>
 
-    <main class="max-w-2xl mx-auto p-6 mt-4">
+    <main class="max-w-xl mx-auto p-4 mt-2">
         
-        <div id="search-section" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
-            <h2 class="text-lg font-semibold mb-2">¿Qué necesitas hoy?</h2>
-            <p class="text-sm text-slate-500 mb-4">Ejemplo de prueba: <b>npro enzimtolerance</b>, <b>alflorex dual action</b>, <b>paracetamol</b></p>
+        <div id="search-section" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6">
+            <h2 class="text-base font-semibold mb-3">¿Qué productos buscas?</h2>
             
-            <div id="inputs-container" class="space-y-3 mb-4"></div>
+            <div id="inputs-container" class="space-y-3 mb-4">
+                </div>
             
             <button onclick="addInputRow()" class="text-blue-600 hover:text-blue-800 font-medium text-sm mb-6 flex items-center gap-1">
                 + Añadir otro producto
             </button>
 
             <button onclick="startOptimization()" class="w-full bg-green-500 hover:bg-green-600 text-white text-lg font-bold py-4 rounded-xl shadow-lg transition-transform transform active:scale-95 flex justify-center items-center gap-2">
-                ✨ Calcular Mejor Combinación
+                ✨ Calcular Ahorro
             </button>
-            <p id="error-msg" class="text-red-500 text-sm mt-3 text-center hidden"></p>
+            <p id="error-msg" class="text-red-500 text-xs mt-3 text-center hidden"></p>
         </div>
 
         <div id="results-section" class="hidden"></div>
@@ -59,21 +61,31 @@
         function addInputRow() {
             inputCount++;
             const div = document.createElement('div');
-            div.className = 'flex gap-2 items-center';
+            // Diseño ultra-compacto para móvil
+            div.className = 'flex gap-1 items-center bg-slate-50 p-2 rounded-xl border border-slate-100';
             div.id = `row-${inputCount}`;
             div.innerHTML = `
-                <div class="bg-slate-100 text-slate-400 font-bold px-3 py-3 rounded-xl">${inputCount}</div>
-                <input type="text" class="product-input flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg" placeholder="Producto...">
-                <div class="flex items-center bg-white border border-slate-300 rounded-xl overflow-hidden">
-                    <span class="px-2 text-slate-500 font-medium bg-slate-50 border-r border-slate-200 py-3">Cant.</span>
-                    <input type="number" class="qty-input w-16 px-2 py-3 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-bold" value="1" min="1">
+                <input type="text" class="product-input flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Producto...">
+                
+                <div class="flex items-center bg-white border border-slate-300 rounded-lg overflow-hidden shrink-0">
+                    <span class="px-2 text-[10px] text-slate-400 font-bold bg-slate-50 border-r py-2">CANT.</span>
+                    <input type="number" class="qty-input w-10 px-1 py-2 text-center focus:outline-none text-sm font-bold" value="1" min="1">
                 </div>
-                ${inputCount > 1 ? `<button onclick="removeInputRow('${div.id}')" class="text-red-400 hover:text-red-600 p-2">🗑️</button>` : `<div class="w-8"></div>`}
+
+                <button onclick="removeInputRow('${div.id}')" class="text-red-400 p-1 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                </button>
             `;
             inputsContainer.appendChild(div);
         }
 
-        function removeInputRow(rowId) { document.getElementById(rowId).remove(); }
+        function removeInputRow(rowId) { 
+            if(document.querySelectorAll('.product-input').length > 1) {
+                document.getElementById(rowId).remove(); 
+            }
+        }
 
         function startOptimization() {
             errorMsg.classList.add('hidden');
@@ -89,13 +101,13 @@
             });
 
             if (productosBuscados.length === 0) {
-                errorMsg.textContent = "Añade al menos un producto.";
+                errorMsg.textContent = "Escribe un producto.";
                 errorMsg.classList.remove('hidden'); return;
             }
 
             for (let item of productosBuscados) {
                 if (!catalogo[item.nombre]) {
-                    errorMsg.textContent = `No encuentro "${item.nombre}". Usa los del ejemplo.`;
+                    errorMsg.textContent = `No encuentro "${item.nombre}".`;
                     errorMsg.classList.remove('hidden'); return;
                 }
             }
@@ -109,7 +121,6 @@
             let opciones = [];
             const nombresTiendas = Object.keys(tiendas);
 
-            // 1. Opciones TODO EN UNA TIENDA
             nombresTiendas.forEach(tienda => {
                 let tieneTodos = true; let subtotal = 0; let dist = [];
                 listaProductos.forEach(item => {
@@ -119,116 +130,56 @@
                         dist.push({nombre: item.nombre, cant: item.cantidad, precio: costoLinea, tienda: tienda});
                     } else { tieneTodos = false; }
                 });
-
                 if (tieneTodos) {
                     let envio = subtotal >= tiendas[tienda].envioGratisDesde ? 0 : tiendas[tienda].envio;
-                    opciones.push({
-                        tipo: 'unica', titulo: tienda,
-                        subtotal: subtotal, envio: envio, total: subtotal + envio,
-                        distribucion: dist,
-                        resumenEnvios: [{t: tienda, s: subtotal, e: envio, u: tiendas[tienda].envioGratisDesde}]
-                    });
+                    opciones.push({ tipo: 'unica', titulo: tienda, subtotal: subtotal, envio: envio, total: subtotal + envio, distribucion: dist, resumenEnvios: [{t: tienda, s: subtotal, e: envio, u: tiendas[tienda].envioGratisDesde}] });
                 }
             });
 
-            // 2. Opciones DIVIDIENDO EN 2 TIENDAS
             for (let i = 0; i < nombresTiendas.length; i++) {
                 for (let j = i + 1; j < nombresTiendas.length; j++) {
                     let t1 = nombresTiendas[i]; let t2 = nombresTiendas[j];
                     let valido = true; let sub1 = 0; let sub2 = 0; let dist = [];
-
                     listaProductos.forEach(item => {
-                        let p1 = catalogo[item.nombre] && catalogo[item.nombre][t1] !== undefined ? catalogo[item.nombre][t1] : Infinity;
-                        let p2 = catalogo[item.nombre] && catalogo[item.nombre][t2] !== undefined ? catalogo[item.nombre][t2] : Infinity;
-
-                        if (p1 === Infinity && p2 === Infinity) { valido = false; }
-                        else if (p1 <= p2) {
-                            let costoLinea = p1 * item.cantidad; sub1 += costoLinea;
-                            dist.push({nombre: item.nombre, cant: item.cantidad, precio: costoLinea, tienda: t1});
-                        } else {
-                            let costoLinea = p2 * item.cantidad; sub2 += costoLinea;
-                            dist.push({nombre: item.nombre, cant: item.cantidad, precio: costoLinea, tienda: t2});
-                        }
+                        let p1 = catalogo[item.nombre][t1] || Infinity;
+                        let p2 = catalogo[item.nombre][t2] || Infinity;
+                        if (p1 === Infinity && p2 === Infinity) valido = false;
+                        else if (p1 <= p2) { let costo = p1 * item.cantidad; sub1 += costo; dist.push({nombre: item.nombre, cant: item.cantidad, precio: costo, tienda: t1}); }
+                        else { let costo = p2 * item.cantidad; sub2 += costo; dist.push({nombre: item.nombre, cant: item.cantidad, precio: costo, tienda: t2}); }
                     });
-
-                    // Solo guardar si realmente dividimos el pedido (ambas tiendas se usan)
                     if (valido && sub1 > 0 && sub2 > 0) {
                         let env1 = sub1 >= tiendas[t1].envioGratisDesde ? 0 : tiendas[t1].envio;
                         let env2 = sub2 >= tiendas[t2].envioGratisDesde ? 0 : tiendas[t2].envio;
-                        opciones.push({
-                            tipo: 'dividida', titulo: `${t1} + ${t2}`,
-                            subtotal: sub1 + sub2, envio: env1 + env2, total: sub1 + sub2 + env1 + env2,
-                            distribucion: dist,
-                            resumenEnvios: [
-                                {t: t1, s: sub1, e: env1, u: tiendas[t1].envioGratisDesde},
-                                {t: t2, s: sub2, e: env2, u: tiendas[t2].envioGratisDesde}
-                            ]
-                        });
+                        opciones.push({ tipo: 'dividida', titulo: `${t1} + ${t2}`, subtotal: sub1 + sub2, envio: env1 + env2, total: sub1 + sub2 + env1 + env2, distribucion: dist, resumenEnvios: [{t: t1, s: sub1, e: env1, u: tiendas[t1].envioGratisDesde}, {t: t2, s: sub2, e: env2, u: tiendas[t2].envioGratisDesde}] });
                     }
                 }
             }
-
-            // Ordenar por el precio final más barato
             opciones.sort((a, b) => a.total - b.total);
             return opciones;
         }
 
         function mostrarResultados(opciones) {
             const resultsSection = document.getElementById('results-section');
-            if (opciones.length === 0) return;
-
-            // Mostrar solo el top 3 de combinaciones para no saturar al usuario
-            const topOpciones = opciones.slice(0, 3);
             let html = '';
-
-            topOpciones.forEach((opt, index) => {
-                let esGanadora = index === 0;
-                let bgColor = esGanadora ? 'bg-green-50 border-green-300' : 'bg-white border-slate-200';
-                let textColor = esGanadora ? 'text-green-800' : 'text-slate-800';
-
-                html += `
-                <div class="${bgColor} border p-6 rounded-2xl mb-6 shadow-sm relative">
-                    ${esGanadora ? `<div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wide">🏆 Opción más barata</div>` : ''}
-                    
-                    <div class="text-center mt-2">
-                        <span class="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-2 inline-block ${opt.tipo === 'unica' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">
-                            ${opt.tipo === 'unica' ? '📦 1 Solo Paquete' : '✂️ Compra Dividida en 2'}
-                        </span>
-                        <h2 class="text-xl font-bold ${textColor} mb-1">${opt.titulo}</h2>
-                        <div class="text-4xl font-black ${textColor} mb-4">${opt.total.toFixed(2)}€</div>
-                    </div>
-                `;
-
-                opt.resumenEnvios.forEach(resumen => {
-                    let productosDeEstaTienda = opt.distribucion.filter(p => p.tienda === resumen.t);
-                    if (productosDeEstaTienda.length > 0) {
-                        html += `
-                        <div class="bg-white/60 p-4 rounded-xl mb-3 border border-slate-100">
-                            <h4 class="font-bold text-sm text-slate-700 border-b pb-1 mb-2">Comprar en ${resumen.t}:</h4>
-                            <ul class="space-y-1 mb-2">`;
-                        
-                        productosDeEstaTienda.forEach(p => {
-                            html += `<li class="flex justify-between text-sm text-slate-600 capitalize">
-                                <span><b>${p.cant}x</b> ${p.nombre}</span> <span>${p.precio.toFixed(2)}€</span>
-                            </li>`;
-                        });
-                        
-                        html += `</ul>`;
-                        
-                        if (resumen.e === 0) {
-                            html += `<p class="text-xs font-bold text-green-600 bg-green-100 inline-block px-2 py-1 rounded">✅ Envío Gratis superado</p>`;
-                        } else {
-                            html += `<p class="text-xs text-orange-600">⚠️ Envío: ${resumen.e.toFixed(2)}€ (Faltan ${(resumen.u - resumen.s).toFixed(2)}€ para gratis)</p>`;
-                        }
-                        html += `</div>`;
-                    }
+            opciones.slice(0, 3).forEach((opt, index) => {
+                let esG = index === 0;
+                html += `<div class="${esG ? 'bg-green-50 border-green-300' : 'bg-white border-slate-200'} border p-5 rounded-2xl mb-4 shadow-sm">
+                    <div class="text-center">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${opt.tipo === 'unica' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">${opt.tipo === 'unica' ? '📦 1 Paquete' : '✂️ Compra Dividida'}</span>
+                        <h2 class="text-lg font-bold mt-1">${opt.titulo}</h2>
+                        <div class="text-3xl font-black ${esG ? 'text-green-700' : 'text-slate-800'}">${opt.total.toFixed(2)}€</div>
+                    </div>`;
+                opt.resumenEnvios.forEach(res => {
+                    let prods = opt.distribucion.filter(p => p.tienda === res.t);
+                    html += `<div class="mt-3 text-xs bg-white/50 p-2 rounded-lg">
+                        <p class="font-bold border-b mb-1 uppercase text-[9px] text-slate-400">Tienda: ${res.t}</p>
+                        ${prods.map(p => `<div class="flex justify-between"><span>${p.cant}x ${p.nombre}</span><span>${p.precio.toFixed(2)}€</span></div>`).join('')}
+                        <p class="mt-1 font-bold ${res.e === 0 ? 'text-green-600' : 'text-orange-500'}">${res.e === 0 ? 'Envío Gratis' : 'Envío: ' + res.e.toFixed(2) + '€'}</p>
+                    </div>`;
                 });
-                
                 html += `</div>`;
             });
-
-            html += `<button onclick="location.reload()" class="mt-4 text-slate-500 hover:text-slate-800 underline w-full text-center pb-8">Volver al buscador</button>`;
-            
+            html += `<button onclick="location.reload()" class="w-full text-center text-slate-400 text-sm underline mt-4 pb-10">Nueva búsqueda</button>`;
             resultsSection.innerHTML = html;
             resultsSection.classList.remove('hidden');
         }
