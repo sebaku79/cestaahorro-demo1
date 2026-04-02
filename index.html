@@ -31,11 +31,12 @@
         const ID_DOCUMENTO = '1r2cN8fnQI0xqb6Xo2K1lOTFWUlGdYhb1';
         const URL_EXCEL = `https://docs.google.com/spreadsheets/d/${ID_DOCUMENTO}/export?format=csv`;
 
-        // ⚠️ AQUÍ CONFIGURAS LOS NOMBRES Y LOS ENVÍOS DE TUS FARMACIAS
+        // ⚠️ AQUÍ CONFIGURAS LOS NOMBRES Y LOS ENVÍOS DE TUS 4 FARMACIAS
         const tiendas = {
-            "Promofarma": { envio: 4.00, envioGratisDesde: 45.00 }, // Cambia estos importes por los reales de Promofarma
-            "Atida": { envio: 2.99, envioGratisDesde: 35.00 },      // Cambia estos importes por los reales de Atida
-            "Farmacia 3": { envio: 3.50, envioGratisDesde: 50.00 }  // Pon el nombre de tu columna D
+            "Promofarma": { envio: 4.00, envioGratisDesde: 45.00 },
+            "Atida": { envio: 2.99, envioGratisDesde: 35.00 },
+            "Dosfarma": { envio: 3.99, envioGratisDesde: 49.00 }, // Cambia esto si es distinto
+            "Farmacia Jiménez": { envio: 3.99, envioGratisDesde: 49.00 } // Cambia esto si es distinto
         };
 
         let catalogo = {};
@@ -56,11 +57,12 @@
                     if(columnas.length >= 2 && columnas[0].trim() !== '') {
                         const nombre = columnas[0].trim().toLowerCase();
                         
-                        // Guardamos los precios de las columnas (B, C y D)
+                        // Guardamos los precios de las columnas (B, C, D y E)
                         catalogo[nombre] = {
                             "Promofarma": parseFloat(columnas[1] ? columnas[1].replace(',', '.') : 'NaN'),
                             "Atida": parseFloat(columnas[2] ? columnas[2].replace(',', '.') : 'NaN'),
-                            "Farmacia 3": parseFloat(columnas[3] ? columnas[3].replace(',', '.') : 'NaN')
+                            "Dosfarma": parseFloat(columnas[3] ? columnas[3].replace(',', '.') : 'NaN'),
+                            "Farmacia Jiménez": parseFloat(columnas[4] ? columnas[4].replace(',', '.') : 'NaN')
                         };
                         
                         let option = document.createElement('option');
