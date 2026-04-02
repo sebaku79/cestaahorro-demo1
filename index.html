@@ -27,15 +27,15 @@
     </main>
 
     <script>
-        // Hemos transformado tu enlace para exportar en CSV
+        // Enlace automático a tu Google Sheets
         const ID_DOCUMENTO = '1r2cN8fnQI0xqb6Xo2K1lOTFWUlGdYhb1';
         const URL_EXCEL = `https://docs.google.com/spreadsheets/d/${ID_DOCUMENTO}/export?format=csv`;
 
-        // Aquí definimos los gastos de envío de las 3 farmacias de tus columnas B, C y D
+        // ⚠️ AQUÍ CONFIGURAS LOS NOMBRES Y LOS ENVÍOS DE TUS FARMACIAS
         const tiendas = {
-            "Farmacia A": { envio: 4.00, envioGratisDesde: 45.00 },
-            "Farmacia B": { envio: 2.99, envioGratisDesde: 35.00 },
-            "Farmacia C": { envio: 3.50, envioGratisDesde: 50.00 }
+            "Promofarma": { envio: 4.00, envioGratisDesde: 45.00 }, // Cambia estos importes por los reales de Promofarma
+            "Atida": { envio: 2.99, envioGratisDesde: 35.00 },      // Cambia estos importes por los reales de Atida
+            "Farmacia 3": { envio: 3.50, envioGratisDesde: 50.00 }  // Pon el nombre de tu columna D
         };
 
         let catalogo = {};
@@ -52,16 +52,15 @@
                 const datalist = document.getElementById('lista-productos');
                 
                 filas.forEach(fila => {
-                    // Separamos por comas o puntos y comas (depende de cómo exporte tu Excel)
                     const columnas = fila.split(/,|;/); 
-                    if(columnas.length >= 4 && columnas[0].trim() !== '') {
+                    if(columnas.length >= 2 && columnas[0].trim() !== '') {
                         const nombre = columnas[0].trim().toLowerCase();
                         
-                        // Guardamos los precios (reemplazando comas por puntos en los decimales por si acaso)
+                        // Guardamos los precios de las columnas (B, C y D)
                         catalogo[nombre] = {
-                            "Farmacia A": parseFloat(columnas[1].replace(',', '.')),
-                            "Farmacia B": parseFloat(columnas[2].replace(',', '.')),
-                            "Farmacia C": parseFloat(columnas[3].replace(',', '.'))
+                            "Promofarma": parseFloat(columnas[1] ? columnas[1].replace(',', '.') : 'NaN'),
+                            "Atida": parseFloat(columnas[2] ? columnas[2].replace(',', '.') : 'NaN'),
+                            "Farmacia 3": parseFloat(columnas[3] ? columnas[3].replace(',', '.') : 'NaN')
                         };
                         
                         let option = document.createElement('option');
@@ -85,7 +84,7 @@
             div.className = 'flex gap-2 items-center bg-white p-2 rounded border border-slate-200 shadow-sm';
             div.id = `row-${inputCount}`;
             div.innerHTML = `
-                <input type="text" list="lista-productos" class="product-input flex-1 bg-transparent px-1 py-1 text-sm outline-none placeholder-slate-300" placeholder="Ej: paracetamol...">
+                <input type="text" list="lista-productos" class="product-input flex-1 bg-transparent px-1 py-1 text-sm outline-none placeholder-slate-300" placeholder="Ej: alflorex...">
                 <div class="flex items-center bg-slate-50 rounded px-1 shrink-0 border border-slate-100">
                     <span class="text-[9px] text-slate-400 font-bold mr-1">UDS:</span>
                     <input type="number" class="qty-input w-6 bg-transparent text-sm font-bold text-center outline-none p-0" value="1" min="1">
