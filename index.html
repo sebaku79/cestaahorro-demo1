@@ -27,16 +27,14 @@
     </main>
 
     <script>
-        // Enlace automático a tu Google Sheets
         const ID_DOCUMENTO = '1r2cN8fnQI0xqb6Xo2K1lOTFWUlGdYhb1';
         const URL_EXCEL = `https://docs.google.com/spreadsheets/d/${ID_DOCUMENTO}/export?format=csv`;
 
-        // ⚠️ AQUÍ CONFIGURAS LOS NOMBRES Y LOS ENVÍOS DE TUS 4 FARMACIAS
         const tiendas = {
             "Promofarma": { envio: 4.00, envioGratisDesde: 45.00 },
             "Atida": { envio: 2.99, envioGratisDesde: 35.00 },
-            "Dosfarma": { envio: 3.99, envioGratisDesde: 49.00 }, // Cambia esto si es distinto
-            "Farmacia Jiménez": { envio: 3.99, envioGratisDesde: 49.00 } // Cambia esto si es distinto
+            "Dosfarma": { envio: 3.99, envioGratisDesde: 49.00 },
+            "Farmacia Jiménez": { envio: 3.99, envioGratisDesde: 49.00 }
         };
 
         let catalogo = {};
@@ -48,21 +46,31 @@
             try {
                 const response = await fetch(URL_EXCEL);
                 const data = await response.text();
-                const filas = data.split('\n').slice(1); // Saltar la Fila 1 (cabeceras)
+                // Separamos por filas y quitamos la primera (cabecera)
+                const filas = data.split(/\r?\n/).slice(1); 
                 
                 const datalist = document.getElementById('lista-productos');
                 
                 filas.forEach(fila => {
-                    const columnas = fila.split(/,|;/); 
+                    // Sistema inteligente de detección de columnas (coma o punto y coma)
+                    let columnas = fila.includes(';') ? fila.split(';') : fila.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    
                     if(columnas.length >= 2 && columnas[0].trim() !== '') {
-                        const nombre = columnas[0].trim().toLowerCase();
+                        // Limpiamos el nombre (quitamos comillas y espacios)
+                        const nombre = columnas[0].replace(/"/g, '').trim().toLowerCase();
                         
-                        // Guardamos los precios de las columnas (B, C, D y E)
+                        // Función para limpiar el precio: quita comillas y cambia coma decimal por punto
+                        const p = (val) => {
+                            if (!val) return NaN;
+                            let limpio = val.replace(/"/g, '').trim().replace(',', '.');
+                            return parseFloat(limpio);
+                        };
+
                         catalogo[nombre] = {
-                            "Promofarma": parseFloat(columnas[1] ? columnas[1].replace(',', '.') : 'NaN'),
-                            "Atida": parseFloat(columnas[2] ? columnas[2].replace(',', '.') : 'NaN'),
-                            "Dosfarma": parseFloat(columnas[3] ? columnas[3].replace(',', '.') : 'NaN'),
-                            "Farmacia Jiménez": parseFloat(columnas[4] ? columnas[4].replace(',', '.') : 'NaN')
+                            "Promofarma": p(columnas[1]),
+                            "Atida": p(columnas[2]),
+                            "Dosfarma": p(columnas[3]),
+                            "Farmacia Jiménez": p(columnas[4])
                         };
                         
                         let option = document.createElement('option');
@@ -71,14 +79,16 @@
                     }
                 });
 
-                document.getElementById('status-text').textContent = "✅ Catálogo actualizado y listo";
+                document.getElementById('status-text').textContent = "✅ Base de datos sincronizada";
                 document.getElementById('search-section').classList.remove('opacity-50', 'pointer-events-none');
                 addInputRow(); addInputRow();
             } catch (e) {
-                document.getElementById('status-text').textContent = "❌ Error al leer el Excel";
+                document.getElementById('status-text').textContent = "❌ Error de conexión";
                 console.error(e);
             }
         };
+
+        // --- LAS FUNCIONES DE CÁLCULO SE MANTIENEN IGUAL ---
 
         function addInputRow() {
             inputCount++;
@@ -144,7 +154,7 @@
                         dist.push({nombre: item.nombre, cant: item.cantidad, precio: costoLinea, tienda: tienda});
                     } else { tieneTodos = false; }
                 });
-                if (tieneTodos) {
+                if (tieneTodos && subtotal > 0) {
                     let envio = subtotal >= tiendas[tienda].envioGratisDesde ? 0 : tiendas[tienda].envio;
                     opciones.push({ tipo: 'unica', titulo: tienda, subtotal: subtotal, envio: envio, total: subtotal + envio, distribucion: dist, resumenEnvios: [{t: tienda, s: subtotal, e: envio, u: tiendas[tienda].envioGratisDesde}] });
                 }
