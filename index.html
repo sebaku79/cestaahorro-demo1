@@ -11,6 +11,8 @@
             50% { transform: scale(1.05); }
         }
         .animate-saving { animation: pulse-soft 2s infinite; }
+        /* Evita que el zoom automático en iPhone mueva la pantalla */
+        input { font-size: 16px !important; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen pb-10">
@@ -19,24 +21,25 @@
 
     <header class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white pt-8 pb-10 px-6 shadow-xl rounded-b-[40px] text-center mb-6">
         <h1 class="text-3xl font-black mb-1 tracking-tighter italic">🛒 CESTAHORRO</h1>
-        <p class="text-emerald-100 text-xs font-semibold uppercase tracking-widest opacity-80" id="status-text">Sincronizando farmacias...</p>
+        <p class="text-emerald-100 text-[10px] font-semibold uppercase tracking-widest opacity-80" id="status-text">Sincronizando farmacias...</p>
     </header>
 
-    <main class="max-w-md mx-auto px-4">
-        <div id="search-section" class="bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 mb-6 opacity-0 transition-opacity duration-500">
+    <main class="max-w-md mx-auto px-5">
+        
+        <div id="search-section" class="bg-white p-5 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 mb-6 opacity-0 transition-opacity duration-500">
             <div class="flex items-center justify-between mb-5">
-                <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest">Mi Lista de Compra</h2>
-                <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-lg">7 Farmacias Online</span>
+                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mi Lista de Compra</h2>
+                <span class="bg-emerald-50 text-emerald-600 text-[9px] font-bold px-2 py-1 rounded-lg">7 Farmacias</span>
             </div>
             
             <div id="inputs-container" class="space-y-4 mb-6"></div>
 
-            <button onclick="addInputRow()" class="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold text-sm hover:border-emerald-300 hover:text-emerald-500 transition-all mb-6">
+            <button onclick="addInputRow()" class="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold text-xs hover:border-emerald-300 hover:text-emerald-500 transition-all mb-6">
                 <span>+</span> Añadir producto
             </button>
 
-            <button onclick="startOptimization()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-lg font-black py-4 rounded-2xl shadow-lg shadow-emerald-200 transition-all active:scale-95 flex items-center justify-center gap-3">
-                ✨ CALCULAR AHORRO
+            <button onclick="startOptimization()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-base font-black py-4 rounded-2xl shadow-lg shadow-emerald-200 transition-all active:scale-95 flex items-center justify-center gap-3">
+                ✨ CALCULAR MEJOR PRECIO
             </button>
             <p id="error-msg" class="text-red-500 text-[11px] mt-4 text-center hidden font-bold"></p>
         </div>
@@ -92,16 +95,17 @@
         function addInputRow() {
             inputCount++;
             const div = document.createElement('div');
-            div.className = 'flex gap-2 items-center animate-in fade-in slide-in-from-left-2 duration-300';
+            // Añadido un pequeño margen a la derecha de la fila para que no toque el borde
+            div.className = 'flex gap-2 items-center animate-in fade-in slide-in-from-left-2 duration-300 pr-1';
             div.id = `row-${inputCount}`;
             div.innerHTML = `
-                <div class="flex-1 flex items-center bg-slate-50 rounded-2xl border border-slate-100 p-1 focus-within:ring-2 focus-within:ring-emerald-200 transition-all">
-                    <input type="text" list="lista-productos" class="product-input flex-1 bg-transparent px-3 py-2 text-sm outline-none font-bold text-slate-700" placeholder="Producto...">
-                    <div class="flex items-center bg-white rounded-xl px-2 py-1 shadow-sm border border-slate-100">
-                        <input type="number" class="qty-input w-7 bg-transparent text-xs font-black text-center outline-none text-emerald-600" value="1" min="1">
+                <div class="flex-1 flex items-center bg-slate-50 rounded-2xl border border-slate-100 p-1 focus-within:ring-2 focus-within:ring-emerald-200 transition-all overflow-hidden">
+                    <input type="text" list="lista-productos" class="product-input flex-1 bg-transparent px-2 py-2 text-[14px] outline-none font-bold text-slate-700 w-full" placeholder="Producto...">
+                    <div class="flex items-center bg-white rounded-xl px-1.5 py-1 shadow-sm border border-slate-50 shrink-0">
+                        <input type="number" class="qty-input w-6 bg-transparent text-[11px] font-black text-center outline-none text-emerald-600" value="1" min="1">
                     </div>
                 </div>
-                <button onclick="removeInputRow('${div.id}')" class="bg-red-50 text-red-400 p-3 rounded-2xl hover:bg-red-500 hover:text-white transition-colors">
+                <button onclick="removeInputRow('${div.id}')" class="bg-red-50 text-red-400 p-2.5 rounded-2xl hover:bg-red-500 hover:text-white transition-colors shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
             `;
@@ -116,14 +120,17 @@
             const rows = document.querySelectorAll('#inputs-container > div');
             let buscados = [];
             rows.forEach(r => {
-                const val = r.querySelector('.product-input').value.trim().toLowerCase();
-                const qty = parseInt(r.querySelector('.qty-input').value) || 1;
-                if(val !== '') buscados.push({ nombre: val, cantidad: qty });
+                const inp = r.querySelector('.product-input');
+                if(inp) {
+                    const val = inp.value.trim().toLowerCase();
+                    const qty = parseInt(r.querySelector('.qty-input').value) || 1;
+                    if(val !== '') buscados.push({ nombre: val, cantidad: qty });
+                }
             });
             if(buscados.length === 0) return;
             for(let it of buscados) {
                 if(!catalogo[it.nombre]) {
-                    document.getElementById('error-msg').textContent = `Falta: "${it.nombre}"`;
+                    document.getElementById('error-msg').textContent = `No encontrado: "${it.nombre}"`;
                     document.getElementById('error-msg').classList.remove('hidden'); return;
                 }
             }
@@ -188,7 +195,7 @@
                     let esG = idx === 0;
                     html += `
                     <div class="${esG ? 'bg-white border-emerald-400 ring-4 ring-emerald-50' : 'bg-white border-slate-200'} border-2 p-6 rounded-[32px] shadow-xl relative overflow-hidden transition-all">
-                        ${esG && ahorro > 1 ? `<div class="absolute -right-8 top-6 bg-emerald-500 text-white text-[10px] font-black px-10 py-1 rotate-45 shadow-sm animate-saving uppercase tracking-tighter">¡Ahorras ${ahorro.toFixed(2)}€!</div>` : ''}
+                        ${esG && ahorro > 1 ? `<div class="absolute -right-8 top-6 bg-emerald-500 text-white text-[9px] font-black px-10 py-1 rotate-45 shadow-sm animate-saving uppercase tracking-tighter">¡Ahorras ${ahorro.toFixed(2)}€!</div>` : ''}
                         <div class="text-center mb-6">
                             <span class="text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-tighter ${o.tipo === 'unica' ? 'bg-slate-100 text-slate-500' : 'bg-indigo-100 text-indigo-600'}">${o.tipo === 'unica' ? '📦 Entrega única' : '✂️ Compra dividida'}</span>
                             <h3 class="text-xl font-black mt-3 text-slate-800 leading-tight">${o.titulo}</h3>
@@ -197,10 +204,10 @@
                         ${o.resumen.map(r => {
                             let pds = o.distribucion.filter(x => x.t === r.t);
                             return `
-                            <div class="bg-slate-50 rounded-2xl p-4 mb-3 border border-slate-100">
+                            <div class="bg-slate-50 rounded-2xl p-4 mb-3 border border-slate-100 text-left">
                                 <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-3">
-                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${r.t}</span>
-                                    <span class="text-[10px] font-bold ${r.e === 0 ? 'text-emerald-500' : 'text-amber-600'}">${r.e === 0 ? 'ENVÍO GRATIS' : '+'+r.e.toFixed(2)+'€ ENVÍO'}</span>
+                                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${r.t}</span>
+                                    <span class="text-[9px] font-bold ${r.e === 0 ? 'text-emerald-500' : 'text-amber-600'}">${r.e === 0 ? 'ENVÍO GRATIS' : '+'+r.e.toFixed(2)+'€ ENVÍO'}</span>
                                 </div>
                                 ${pds.map(p => `<div class="flex justify-between text-xs font-bold text-slate-600 mb-1.5"><span class="truncate pr-4 capitalize">${p.c}x ${p.n}</span><span>${p.p.toFixed(2)}€</span></div>`).join('')}
                             </div>`;
@@ -208,9 +215,10 @@
                     </div>`;
                 });
             }
-            html += `<button onclick="location.reload()" class="w-full text-slate-400 font-bold text-xs py-4 uppercase tracking-widest">← Nueva búsqueda</button>`;
+            html += `<button onclick="location.reload()" class="w-full text-slate-400 font-bold text-[10px] py-4 uppercase tracking-widest hover:text-emerald-500 transition-colors">← Nueva búsqueda</button>`;
             res.innerHTML = html;
             res.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>
