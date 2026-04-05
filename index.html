@@ -86,19 +86,19 @@
         </div>
     </div>
 
-    <header class="relative glass-header text-white pt-10 pb-8 px-6 shadow-xl rounded-b-[40px] text-center mb-5">
-        <button onclick="abrirMenu()" class="absolute top-8 left-6 text-mint-100 hover:text-white transition-colors p-1.5 bg-white/10 rounded-xl border border-white/10 active:scale-95">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
+    <header class="relative glass-header text-white pt-8 pb-8 px-6 shadow-xl rounded-b-[40px] text-center mb-5">
+        <button onclick="abrirMenu()" class="absolute top-8 left-6 text-mint-100 hover:text-white transition-colors p-1.5 bg-white/10 rounded-xl border border-white/10 active:scale-95 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
         
-        <div class="flex items-center justify-center gap-2 mt-2 ml-6">
-            <h1 class="text-[32px] font-black italic tracking-tighter text-white drop-shadow-sm">CESTAHORRO</h1>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-accent-gold drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="flex items-center justify-center gap-2 ml-6">
+            <h1 class="text-[32px] font-black italic tracking-tighter text-white drop-shadow-sm leading-none">CESTAHORRO</h1>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent-gold drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
         </div>
         
-        <p class="text-mint-100 text-[10px] font-semibold uppercase tracking-widest opacity-80 mt-1 ml-6" id="status-text">Sincronizando catálogo...</p>
+        <p class="text-mint-100 text-[10px] font-semibold uppercase tracking-widest opacity-80 mt-2 ml-6" id="status-text">Sincronizando catálogo...</p>
         
         <div class="absolute -bottom-3.5 left-0 right-0 flex justify-center z-10">
             <div class="flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg border border-white/10">
@@ -111,38 +111,38 @@
         </div>
     </header>
 
-    <main class="max-w-md mx-auto px-5 mt-10">
-        <div id="search-section" class="bg-white/70 backdrop-blur-sm p-5 rounded-[32px] shadow-xl shadow-slate-200/40 border border-white mb-6 opacity-0 transition-opacity duration-500 relative">
+    <main class="max-w-md mx-auto px-5 mt-8">
+        <div id="search-section" class="bg-white/70 backdrop-blur-sm px-5 py-4 rounded-[32px] shadow-xl shadow-slate-200/40 border border-white mb-6 opacity-0 transition-opacity duration-500 relative">
             
-            <div class="mb-4 bg-mint-50 px-4 py-3 rounded-2xl border border-mint-100 shadow-inner text-center">
-                <div class="flex items-center justify-center gap-2 mb-1">
-                    <span class="text-lg">⚡</span>
-                    <h2 class="text-[11px] font-black text-mint-950 uppercase tracking-widest leading-tight">Buscador Inteligente</h2>
+            <div class="mb-5 bg-mint-50 px-4 py-4 rounded-2xl border border-mint-100 shadow-inner text-center">
+                <div class="flex items-center justify-center gap-2 mb-1.5">
+                    <span class="text-xl">⚡</span>
+                    <h2 class="text-sm font-black text-mint-950 uppercase tracking-widest leading-tight">Buscador Inteligente</h2>
                 </div>
-                <p class="text-[10px] text-mint-900/80 font-medium mb-3">Tu cesta perfecta, al menor coste posible.</p>
+                <p class="text-xs text-mint-900/80 font-medium mb-4">Tu cesta perfecta, al menor coste posible.</p>
                 
-                <div class="flex flex-wrap justify-center gap-2">
-                    <span class="bg-white text-mint-700 text-[9px] font-bold px-3 py-1 rounded-full border border-mint-100 shadow-sm">Dodot</span>
-                    <span class="bg-white text-rose-600 text-[9px] font-bold px-3 py-1 rounded-full border border-rose-100 shadow-sm italic">Elvive</span>
-                    <span class="bg-white text-accent-violet text-[9px] font-bold px-3 py-1 rounded-full border border-violet-100 shadow-sm">Mustela</span>
-                    <span class="bg-white text-slate-600 text-[9px] font-bold px-3 py-1 rounded-full border border-slate-200 shadow-sm">Blemil</span>
-                    <span class="bg-white text-blue-600 text-[9px] font-bold px-3 py-1 rounded-full border border-blue-100 shadow-sm">Isdin</span>
-                    <span class="bg-white text-amber-600 text-[9px] font-bold px-3 py-1 rounded-full border border-amber-100 shadow-sm">Kijimea</span>
+                <div class="flex flex-wrap justify-center gap-2.5">
+                    <span class="bg-white text-mint-700 text-xs font-bold px-3.5 py-1.5 rounded-full border border-mint-100 shadow-sm">Dodot</span>
+                    <span class="bg-white text-rose-600 text-xs font-bold px-3.5 py-1.5 rounded-full border border-rose-100 shadow-sm italic">Elvive</span>
+                    <span class="bg-white text-accent-violet text-xs font-bold px-3.5 py-1.5 rounded-full border border-violet-100 shadow-sm">Mustela</span>
+                    <span class="bg-white text-slate-600 text-xs font-bold px-3.5 py-1.5 rounded-full border border-slate-200 shadow-sm">Blemil</span>
+                    <span class="bg-white text-blue-600 text-xs font-bold px-3.5 py-1.5 rounded-full border border-blue-100 shadow-sm">Isdin</span>
+                    <span class="bg-white text-amber-600 text-xs font-bold px-3.5 py-1.5 rounded-full border border-amber-100 shadow-sm">Kijimea</span>
                 </div>
             </div>
 
             <hr class="border-slate-100 mb-5">
             <div id="inputs-container" class="space-y-4 mb-6"></div>
             
-            <button onclick="addInputRow()" class="flex items-center justify-center gap-2.5 w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold text-xs hover:border-mint-300 hover:text-mint-600 transition-all mb-6">
-                <span>➕</span> Añadir producto
+            <button onclick="addInputRow()" class="flex items-center justify-center gap-2.5 w-full py-4 border-2 border-dashed border-slate-300 bg-white/50 rounded-2xl text-slate-500 font-bold text-sm hover:border-mint-400 hover:text-mint-700 hover:bg-mint-50 transition-all mb-6">
+                <span class="text-lg">➕</span> Añadir producto
             </button>
             
             <button onclick="startOptimization()" class="w-full dynamic-cta text-white text-lg font-extrabold py-5 rounded-3xl shadow-lg shadow-mint-200 flex items-center justify-center gap-3 border border-white/20">
                 ✨ MEJOR PRECIO GLOBAL
             </button>
             
-            <p id="error-msg" class="text-accent-gold text-[11px] mt-4 text-center hidden font-bold bg-amber-50 p-3 rounded-xl border border-amber-100 shadow-inner"></p>
+            <p id="error-msg" class="text-amber-700 text-sm mt-5 text-center hidden font-bold bg-amber-50 p-4 rounded-xl border border-amber-200 shadow-inner leading-snug"></p>
         </div>
         <div id="results-section" class="hidden space-y-6"></div>
     </main>
@@ -255,8 +255,8 @@
                     if(!catalogo[val]) {
                         const coincidencias = Object.keys(catalogo).filter(k => k.includes(val));
                         if(coincidencias.length === 1) { nombreFinal = coincidencias[0]; inp.value = coincidencias[0]; }
-                        else if (coincidencias.length > 1) { errorEncontrado = true; errorMensaje = `⚠️ Hay varios tamaños de "${val}". Selecciónalo en la lista desplegable.`; }
-                        else { errorEncontrado = true; errorMensaje = `❌ No hemos encontrado el producto: "${val}"`; }
+                        else if (coincidencias.length > 1) { errorEncontrado = true; errorMensaje = `⚠️ Hay varios tamaños o tipos de "${val}". Por favor, sé un poco más específico o elígelo de la lista desplegable.`; }
+                        else { errorEncontrado = true; errorMensaje = `❌ No hemos encontrado el producto: "${val}" en nuestra base de datos.`; }
                     }
                     if(!errorEncontrado) buscados.push({ nombre: nombreFinal, cantidad: qty });
                 }
