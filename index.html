@@ -22,7 +22,6 @@
         }
     </script>
     <style>
-        /* Efectos visuales y animaciones */
         body { background-color: #fafaf9; }
         @keyframes dynamic-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
@@ -36,7 +35,6 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Fondo dinámico sutil */
         .bg-gradient-blobs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; opacity: 0.2; pointer-events: none; }
         .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; }
         .blob-1 { top: -10%; left: -10%; width: 40%; height: 40%; background: #ccfbf1; }
@@ -83,19 +81,19 @@
         </div>
     </div>
 
-    <header class="relative glass-header text-white pt-8 pb-8 px-6 shadow-xl rounded-b-[40px] text-center mb-5">
+    <header class="relative glass-header text-white pt-8 pb-8 px-6 shadow-xl rounded-b-[40px] text-center mb-5 flex flex-col items-center">
         <button onclick="abrirMenu()" class="absolute top-8 left-6 z-20 text-mint-100 hover:text-white transition-colors p-1.5 bg-white/10 rounded-xl border border-white/10 active:scale-95 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
         
-        <button onclick="location.reload()" class="inline-flex items-center justify-center gap-2 hover:opacity-80 transition-opacity active:scale-95 outline-none relative z-10 pt-1">
+        <button onclick="location.reload()" class="inline-flex items-center justify-center gap-2 ml-8 hover:opacity-80 transition-opacity active:scale-95 outline-none relative z-10 pt-1">
             <h1 class="text-[32px] font-black italic tracking-tighter text-white drop-shadow-sm leading-none">CESTAHORRO</h1>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent-gold drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
         </button>
         
-        <p class="text-mint-100 text-[10px] font-semibold uppercase tracking-widest opacity-80 mt-2 block" id="status-text">Cargando...</p>
+        <p class="text-mint-100 text-[10px] font-semibold uppercase tracking-widest opacity-80 mt-2 ml-8 block" id="status-text">Cargando...</p>
         
         <div class="absolute -bottom-3.5 left-0 right-0 flex justify-center z-10">
             <div class="flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg border border-white/10">
@@ -147,7 +145,7 @@
     <script>
         const ID_DOCUMENTO = '1r2cN8fnQI0xqb6Xo2K1lOTFWUlGdYhb1';
         const URL_EXCEL = `https://docs.google.com/spreadsheets/d/${ID_DOCUMENTO}/export?format=csv`;
-        const CACHE_KEY = 'cestahorro_catalogo_v2'; // Llave de caché renovada
+        const CACHE_KEY = 'cestahorro_catalogo_v3'; 
 
         const tiendas = {
             "Promofarma": { envio: 4.00, envioGratisDesde: 49.00 },
@@ -188,7 +186,6 @@
             return { activo: false, ahorro: 0, codigo: '' };
         }
 
-        // Función centralizada para procesar los datos del CSV
         function procesarDatosCSV(data) {
             const filas = data.split(/\r?\n/).slice(1);
             const datalist = document.getElementById('lista-productos');
@@ -221,27 +218,22 @@
             }
         }
 
-        // ¡NUEVO! Motor de arranque ultrarrápido usando DOMContentLoaded en lugar de window.onload
         document.addEventListener('DOMContentLoaded', () => {
             const datosGuardados = localStorage.getItem(CACHE_KEY);
             
             if (datosGuardados) {
-                // 1. Carga instantánea desde la memoria del móvil
                 procesarDatosCSV(datosGuardados);
-                
-                // 2. Verificación silenciosa en segundo plano (retrasada 1 seg para no saturar)
                 setTimeout(() => {
                     fetch(URL_EXCEL)
                         .then(res => res.text())
                         .then(data => {
                             if (data !== datosGuardados) {
                                 localStorage.setItem(CACHE_KEY, data);
-                                procesarDatosCSV(data); // Actualiza si hubo cambios
+                                procesarDatosCSV(data); 
                             }
                         }).catch(e => console.log("Modo sin conexión."));
                 }, 1000);
             } else {
-                // Si es la primera vez en la vida que entra
                 fetch(URL_EXCEL)
                     .then(res => res.text())
                     .then(data => {
