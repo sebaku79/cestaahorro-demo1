@@ -91,7 +91,7 @@
             <button onclick="startOptimization()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-base font-black py-4 rounded-2xl shadow-lg shadow-emerald-200 transition-all active:scale-95 flex items-center justify-center gap-3">
                 ✨ CALCULAR MEJOR PRECIO
             </button>
-            <p id="error-msg" class="text-red-500 text-[11px] mt-4 text-center hidden font-bold"></p>
+            <p id="error-msg" class="text-amber-600 text-[11px] mt-4 text-center hidden font-bold bg-amber-50 p-2 rounded-lg border border-amber-100"></p>
         </div>
 
         <div id="results-section" class="hidden space-y-6"></div>
@@ -201,21 +201,49 @@
         function startOptimization() {
             const rows = document.querySelectorAll('#inputs-container > div');
             let buscados = [];
+            let errorEncontrado = false;
+            let errorMensaje = "";
+
             rows.forEach(r => {
                 const inp = r.querySelector('.product-input');
-                if(inp) {
+                if(inp && inp.value.trim() !== '') {
                     const val = inp.value.trim().toLowerCase();
                     const qty = parseInt(r.querySelector('.qty-input').value) || 1;
-                    if(val !== '') buscados.push({ nombre: val, cantidad: qty });
+                    
+                    let nombreFinal = val;
+                    
+                    if(!catalogo[val]) {
+                        // Busca todas las coincidencias parciales
+                        const coincidencias = Object.keys(catalogo).filter(k => k.includes(val));
+                        
+                        if(coincidencias.length === 1) {
+                            // Magia: Solo hay uno, lo corregimos y avanzamos
+                            nombreFinal = coincidencias[0];
+                            inp.value = coincidencias[0]; 
+                        } else if (coincidencias.length > 1) {
+                            // Freno de seguridad: Hay varios (ej: varios tamaños)
+                            errorEncontrado = true;
+                            errorMensaje = `⚠️ Hay varios tamaños de "${val}". Por favor, selecciónalo en la lista desplegable para darte el precio exacto.`;
+                        } else {
+                            // No existe
+                            errorEncontrado = true;
+                            errorMensaje = `❌ No hemos encontrado el producto: "${val}"`;
+                        }
+                    }
+                    
+                    if(!errorEncontrado) buscados.push({ nombre: nombreFinal, cantidad: qty });
                 }
             });
-            if(buscados.length === 0) return;
-            for(let it of buscados) {
-                if(!catalogo[it.nombre]) {
-                    document.getElementById('error-msg').textContent = `No encontrado: "${it.nombre}"`;
-                    document.getElementById('error-msg').classList.remove('hidden'); return;
-                }
+
+            const errorCaja = document.getElementById('error-msg');
+            if(errorEncontrado) {
+                errorCaja.textContent = errorMensaje;
+                errorCaja.classList.remove('hidden');
+                return;
             }
+            if(buscados.length === 0) return;
+            
+            errorCaja.classList.add('hidden');
             document.getElementById('search-section').classList.add('hidden');
             mostrarResultados(calcularMejorCesta(buscados));
         }
@@ -286,7 +314,7 @@
                         ${o.resumen.map(r => {
                             let pds = o.distribucion.filter(x => x.t === r.t);
                             let faltaParaGratis = r.u - r.s;
-                            let totalTienda = r.s + r.e; // Calculamos el total de esta tienda
+                            let totalTienda = r.s + r.e;
                             let htmlEnvio = r.e === 0 
                                 ? `<span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-1 rounded-lg shadow-sm">🎉 ENVÍO GRATIS</span>`
                                 : `<div class="text-right">
