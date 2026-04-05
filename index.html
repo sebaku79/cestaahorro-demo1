@@ -22,16 +22,12 @@
         }
     </script>
     <style>
-        /* Efectos visuales avanzados y animaciones */
         body { background-color: #fafaf9; }
-        @keyframes pulse-gold { 0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); } }
         @keyframes dynamic-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
-        .animate-saving { animation: pulse-gold 2s infinite; }
         .dynamic-cta { background: linear-gradient(-45deg, #14b8a6, #8b5cf6, #14b8a6, #f59e0b); background-size: 400% 400%; animation: dynamic-gradient 5s ease infinite; transition: transform 0.2s ease-in-out; }
         .dynamic-cta:active { transform: scale(0.96); }
 
-        /* Estilos Glassmorphism */
         .glass-header { background: rgba(20, 184, 166, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.1); }
         .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
         
@@ -39,7 +35,6 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Fondo dinámico sutil */
         .bg-gradient-blobs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; opacity: 0.2; }
         .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; }
         .blob-1 { top: -10%; left: -10%; width: 40%; height: 40%; background: #ccfbf1; }
@@ -91,12 +86,12 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
         
-        <div class="flex items-center justify-center gap-2 ml-6">
+        <button onclick="location.reload()" class="flex items-center justify-center gap-2 ml-6 mx-auto hover:opacity-80 transition-opacity active:scale-95 outline-none">
             <h1 class="text-[32px] font-black italic tracking-tighter text-white drop-shadow-sm leading-none">CESTAHORRO</h1>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent-gold drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-        </div>
+        </button>
         
         <p class="text-mint-100 text-[10px] font-semibold uppercase tracking-widest opacity-80 mt-2 ml-6" id="status-text">Sincronizando catálogo...</p>
         
@@ -229,7 +224,8 @@
             div.id = `row-${inputCount}`;
             div.innerHTML = `
                 <div class="flex-1 flex items-center bg-white rounded-2xl border border-slate-100 p-1 focus-within:ring-2 focus-within:ring-mint-200 focus-within:border-mint-200 transition-all overflow-hidden shadow-inner">
-                    <input type="text" list="lista-productos" class="product-input flex-1 bg-transparent px-3 py-3 text-[14px] outline-none font-bold text-slate-700 w-full" placeholder="Buscar producto...">
+                    <span class="pl-3 text-slate-300">🔍</span>
+                    <input type="text" list="lista-productos" class="product-input flex-1 bg-transparent px-2 py-3 text-[14px] outline-none font-bold text-slate-700 w-full" placeholder="Buscar producto...">
                     <select class="qty-input bg-white rounded-xl shadow-sm border border-slate-100 text-[14px] font-black outline-none text-mint-600 px-2 py-1.5 appearance-none mr-1">
                         ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
                     </select>
@@ -321,10 +317,11 @@
                 opts.slice(0, 3).forEach((o, idx) => {
                     let esG = idx === 0;
                     html += `
-                    <div class="${esG ? 'bg-white border-accent-gold ring-8 ring-accent-gold/10' : 'bg-white/80 border-slate-100 backdrop-blur-sm'} border-2 p-7 rounded-[40px] shadow-2xl relative overflow-hidden transition-all duration-500 animate-in fade-in slide-in-from-bottom-5">
-                        ${esG && ahorro > 1 ? `<div class="absolute -right-8 top-6 bg-accent-gold text-white text-[10px] font-black px-10 py-1.5 rotate-45 shadow-md animate-saving uppercase tracking-tighter">¡Ahorras ${ahorro.toFixed(2)}€!</div>` : ''}
+                    <div class="${esG ? 'bg-white border-accent-gold border-4 shadow-[0_10px_30px_rgba(245,158,11,0.3)]' : 'bg-white/80 border-slate-100 border-2 backdrop-blur-sm'} p-7 rounded-[40px] relative overflow-hidden transition-all duration-500 animate-in fade-in slide-in-from-bottom-5">
                         
-                        <div class="text-center mb-7">
+                        ${esG && ahorro > 1 ? `<div class="absolute -right-[35px] top-[25px] bg-accent-gold text-white text-xs font-black px-12 py-2 rotate-45 shadow-lg uppercase tracking-wider border-b-2 border-amber-600 drop-shadow-md">¡Ahorras ${ahorro.toFixed(2)}€!</div>` : ''}
+                        
+                        <div class="text-center mb-7 mt-2">
                             <span class="text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter shadow-inner ${o.tipo === 'unica' ? 'bg-slate-100 text-slate-500' : 'bg-accent-violet/10 text-accent-violet'}">${o.tipo === 'unica' ? '📦 Entrega única' : '✂️ Compra dividida'}</span>
                             <h3 class="text-xl font-black mt-4 text-slate-900 leading-tight tracking-tighter">${o.titulo}</h3>
                             <div class="text-5xl font-black mt-2.5 ${esG ? 'text-mint-600' : 'text-slate-900'} tracking-tighter">${o.total.toFixed(2)}<span class="text-2xl ml-1">€</span></div>
