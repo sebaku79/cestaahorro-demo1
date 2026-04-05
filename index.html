@@ -11,24 +11,39 @@
             50% { transform: scale(1.05); }
         }
         .animate-saving { animation: pulse-soft 2s infinite; }
-        /* Evita que el zoom automático en iPhone mueva la pantalla */
-        input { font-size: 16px !important; }
+        input, select { font-size: 16px !important; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen pb-10">
 
     <datalist id="lista-productos"></datalist>
 
-    <header class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white pt-8 pb-10 px-6 shadow-xl rounded-b-[40px] text-center mb-6">
-        <h1 class="text-3xl font-black mb-1 tracking-tighter italic">🛒 CESTAHORRO</h1>
+    <header class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white pt-8 pb-10 px-6 shadow-xl rounded-b-[40px] text-center mb-6 transition-all duration-300" id="header-bg">
+        <h1 class="text-3xl font-black mb-1 tracking-tighter italic"><span id="icono-principal" class="transition-all duration-300 inline-block">🛒</span> CESTAHORRO</h1>
         <p class="text-emerald-100 text-[10px] font-semibold uppercase tracking-widest opacity-80" id="status-text">Sincronizando farmacias...</p>
     </header>
 
     <main class="max-w-md mx-auto px-5">
         
         <div id="search-section" class="bg-white p-5 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 mb-6 opacity-0 transition-opacity duration-500">
+            
+            <div class="mb-5">
+                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Descubre nuestras categorías</h2>
+                <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                    <span onclick="cambiarCategoria('👶', 'Mundo Bebé', this)" class="categoria-btn bg-emerald-50 text-emerald-700 text-[10px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-emerald-100 shadow-sm cursor-pointer hover:scale-105 transition-transform active:scale-95">👶 Mundo Bebé</span>
+                    <span onclick="cambiarCategoria('✨', 'Alta Cosmética', this)" class="categoria-btn bg-blue-50 text-blue-700 text-[10px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-blue-100 shadow-sm cursor-pointer hover:scale-105 transition-transform active:scale-95">✨ Alta Cosmética</span>
+                    <span onclick="cambiarCategoria('💊', 'Salud y Botiquín', this)" class="categoria-btn bg-rose-50 text-rose-700 text-[10px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-rose-100 shadow-sm cursor-pointer hover:scale-105 transition-transform active:scale-95">💊 Salud y Botiquín</span>
+                    <span onclick="cambiarCategoria('💪', 'Nutrición', this)" class="categoria-btn bg-amber-50 text-amber-700 text-[10px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-amber-100 shadow-sm cursor-pointer hover:scale-105 transition-transform active:scale-95">💪 Nutrición</span>
+                    <span onclick="cambiarCategoria('🛒', 'Compra General', this)" class="categoria-btn bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap border border-slate-200 shadow-sm cursor-pointer hover:scale-105 transition-transform active:scale-95">🔄 Resetear</span>
+                </div>
+            </div>
+
+            <hr class="border-slate-100 mb-5">
+
             <div class="flex items-center justify-between mb-5">
-                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mi Lista de Compra</h2>
+                <h2 id="titulo-lista" class="text-[10px] font-black text-slate-400 uppercase tracking-widest transition-all">Mi Lista de Compra</h2>
                 <span class="bg-emerald-50 text-emerald-600 text-[9px] font-bold px-2 py-1 rounded-lg">7 Farmacias</span>
             </div>
             
@@ -92,6 +107,28 @@
             }
         };
 
+        // ¡NUEVO! Función para dar interactividad a las categorías
+        function cambiarCategoria(icono, nombre, elemento) {
+            // Cambiamos el icono del header con una pequeña animación
+            const iconoHead = document.getElementById('icono-principal');
+            iconoHead.style.transform = 'scale(0)';
+            setTimeout(() => {
+                iconoHead.innerText = icono;
+                iconoHead.style.transform = 'scale(1)';
+            }, 150);
+
+            // Cambiamos el título de la lista
+            document.getElementById('titulo-lista').innerText = `Mi Lista: ${nombre}`;
+
+            // Destacamos visualmente el botón pulsado
+            document.querySelectorAll('.categoria-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-offset-2', 'ring-emerald-400');
+            });
+            if(elemento && icono !== '🛒') {
+                elemento.classList.add('ring-2', 'ring-offset-2', 'ring-emerald-400');
+            }
+        }
+
         function addInputRow() {
             inputCount++;
             const div = document.createElement('div');
@@ -100,8 +137,11 @@
             div.innerHTML = `
                 <div class="flex-1 flex items-center bg-slate-50 rounded-2xl border border-slate-100 p-1 focus-within:ring-2 focus-within:ring-emerald-200 transition-all overflow-hidden">
                     <input type="text" list="lista-productos" class="product-input flex-1 bg-transparent px-2 py-2 text-[14px] outline-none font-bold text-slate-700 w-full" placeholder="Producto...">
-                    <div class="flex items-center bg-white rounded-xl px-1.5 py-1 shadow-sm border border-slate-50 shrink-0">
-                        <input type="number" class="qty-input w-6 bg-transparent text-[11px] font-black text-center outline-none text-emerald-600" value="1" min="1">
+                    <div class="flex items-center bg-white rounded-xl shadow-sm border border-slate-50 shrink-0 px-2 py-1">
+                        <select class="qty-input bg-transparent text-[14px] font-black outline-none text-emerald-600 cursor-pointer appearance-none text-center">
+                            ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
+                        </select>
+                        <span class="text-[10px] text-emerald-300 ml-1">ud</span>
                     </div>
                 </div>
                 <button onclick="removeInputRow('${div.id}')" class="bg-red-50 text-red-400 p-2.5 rounded-2xl hover:bg-red-500 hover:text-white transition-colors shrink-0">
@@ -151,7 +191,7 @@
                 });
                 if(ok && sub > 0) {
                     let env = sub >= tiendas[t].envioGratisDesde ? 0 : tiendas[t].envio;
-                    opciones.push({ tipo: 'unica', titulo: t, total: sub+env, envio: env, distribucion: dist, resumen: [{t: t, s: sub, e: env}] });
+                    opciones.push({ tipo: 'unica', titulo: t, total: sub+env, envio: env, distribucion: dist, resumen: [{t: t, s: sub, e: env, u: tiendas[t].envioGratisDesde}] });
                 }
             });
 
@@ -174,7 +214,7 @@
                                 let e1 = s1>=tiendas[t1].envioGratisDesde ? 0 : tiendas[t1].envio;
                                 let e2 = s2>=tiendas[t2].envioGratisDesde ? 0 : tiendas[t2].envio;
                                 if(!mejorPar || (s1+s2+e1+e2) < mejorPar.total) {
-                                    mejorPar = { tipo: 'dividida', titulo: `${t1} + ${t2}`, total: s1+s2+e1+e2, distribucion: d, resumen: [{t: t1, s: s1, e: e1}, {t: t2, s: s2, e: e2}] };
+                                    mejorPar = { tipo: 'dividida', titulo: `${t1} + ${t2}`, total: s1+s2+e1+e2, distribucion: d, resumen: [{t: t1, s: s1, e: e1, u: tiendas[t1].envioGratisDesde}, {t: t2, s: s2, e: e2, u: tiendas[t2].envioGratisDesde}] };
                                 }
                             }
                         }
@@ -202,11 +242,19 @@
                         </div>
                         ${o.resumen.map(r => {
                             let pds = o.distribucion.filter(x => x.t === r.t);
+                            let faltaParaGratis = r.u - r.s;
+                            let htmlEnvio = r.e === 0 
+                                ? `<span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-1 rounded-lg shadow-sm">🎉 ENVÍO GRATIS</span>`
+                                : `<div class="text-right">
+                                     <span class="text-[10px] font-bold text-slate-500 block mb-0.5">+${r.e.toFixed(2)}€ ENVÍO</span>
+                                     <span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">⚠️ Te faltan ${faltaParaGratis.toFixed(2)}€ para envío gratis</span>
+                                   </div>`;
+
                             return `
                             <div class="bg-slate-50 rounded-2xl p-4 mb-3 border border-slate-100 text-left">
-                                <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-3">
-                                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${r.t}</span>
-                                    <span class="text-[9px] font-bold ${r.e === 0 ? 'text-emerald-500' : 'text-amber-600'}">${r.e === 0 ? 'ENVÍO GRATIS' : '+'+r.e.toFixed(2)+'€ ENVÍO'}</span>
+                                <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-3">
+                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">${r.t}</span>
+                                    ${htmlEnvio}
                                 </div>
                                 ${pds.map(p => `<div class="flex justify-between text-xs font-bold text-slate-600 mb-1.5"><span class="truncate pr-4 capitalize">${p.c}x ${p.n}</span><span>${p.p.toFixed(2)}€</span></div>`).join('')}
                             </div>`;
