@@ -22,6 +22,7 @@
         }
     </script>
     <style>
+        /* Efectos visuales y animaciones */
         body { background-color: #fafaf9; }
         @keyframes dynamic-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
@@ -35,7 +36,8 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .bg-gradient-blobs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; opacity: 0.2; }
+        /* Fondo dinámico sutil */
+        .bg-gradient-blobs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; opacity: 0.2; pointer-events: none; }
         .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; }
         .blob-1 { top: -10%; left: -10%; width: 40%; height: 40%; background: #ccfbf1; }
         .blob-2 { bottom: -10%; right: -10%; width: 50%; height: 50%; background: #e9d5ff; }
@@ -52,7 +54,7 @@
 
     <datalist id="lista-productos"></datalist>
 
-    <div id="menu-overlay" onclick="cerrarMenu()" class="fixed inset-0 bg-slate-950/30 z-40 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="menu-overlay" onclick="cerrarMenu()" class="fixed inset-0 bg-slate-950/40 z-40 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
 
     <div id="menu-lateral" class="fixed top-0 left-0 h-full w-[70%] max-w-[280px] glass-panel z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col rounded-r-3xl border-r border-white/20">
         <div class="bg-gradient-to-br from-mint-600 to-accent-violet text-white p-6 rounded-br-3xl shadow-lg border-b border-white/10">
@@ -82,21 +84,21 @@
     </div>
 
     <header class="relative glass-header text-white pt-8 pb-8 px-6 shadow-xl rounded-b-[40px] text-center mb-5">
-        <button onclick="abrirMenu()" class="absolute top-8 left-6 text-mint-100 hover:text-white transition-colors p-1.5 bg-white/10 rounded-xl border border-white/10 active:scale-95 flex items-center justify-center">
+        <button onclick="abrirMenu()" class="absolute top-8 left-6 z-20 text-mint-100 hover:text-white transition-colors p-1.5 bg-white/10 rounded-xl border border-white/10 active:scale-95 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
         
-        <button onclick="location.reload()" class="flex items-center justify-center gap-2 mx-auto hover:opacity-80 transition-opacity active:scale-95 outline-none relative z-10">
+        <button onclick="location.reload()" class="inline-flex items-center justify-center gap-2 hover:opacity-80 transition-opacity active:scale-95 outline-none relative z-10 pt-1">
             <h1 class="text-[32px] font-black italic tracking-tighter text-white drop-shadow-sm leading-none">CESTAHORRO</h1>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent-gold drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
         </button>
         
-        <p class="text-mint-100 text-[10px] font-semibold uppercase tracking-widest opacity-80 mt-2 ml-0" id="status-text">Cargando datos...</p>
+        <p class="text-mint-100 text-[10px] font-semibold uppercase tracking-widest opacity-80 mt-2 block" id="status-text">Cargando...</p>
         
         <div class="absolute -bottom-3.5 left-0 right-0 flex justify-center z-10">
-            <div class="flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg border border-white/10">
+            <div class="flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg border border-white/10">
                 <span class="relative flex h-2 w-2">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-mint-500"></span>
@@ -129,11 +131,11 @@
             <hr class="border-slate-100 mb-5">
             <div id="inputs-container" class="space-y-4 mb-6"></div>
             
-            <button onclick="addInputRow()" class="flex items-center justify-center gap-2.5 w-full py-4 border-2 border-dashed border-slate-300 bg-white/50 rounded-2xl text-slate-500 font-bold text-sm hover:border-mint-400 hover:text-mint-700 hover:bg-mint-50 transition-all mb-6">
+            <button onclick="addInputRow()" class="flex items-center justify-center gap-2.5 w-full py-4 border-2 border-dashed border-slate-300 bg-white/50 rounded-2xl text-slate-500 font-bold text-sm hover:border-mint-400 hover:text-mint-700 hover:bg-mint-50 transition-all mb-6 active:scale-95">
                 <span class="text-lg">➕</span> Añadir producto
             </button>
             
-            <button onclick="startOptimization()" class="w-full dynamic-cta text-white text-lg font-extrabold py-5 rounded-3xl shadow-lg shadow-mint-200 flex items-center justify-center gap-3 border border-white/20">
+            <button onclick="startOptimization()" class="w-full dynamic-cta text-white text-lg font-extrabold py-5 rounded-3xl shadow-lg shadow-mint-200 flex items-center justify-center gap-3 border border-white/20 active:scale-95">
                 ✨ MEJOR PRECIO GLOBAL
             </button>
             
@@ -145,7 +147,7 @@
     <script>
         const ID_DOCUMENTO = '1r2cN8fnQI0xqb6Xo2K1lOTFWUlGdYhb1';
         const URL_EXCEL = `https://docs.google.com/spreadsheets/d/${ID_DOCUMENTO}/export?format=csv`;
-        const CACHE_KEY = 'cestahorro_catalogo';
+        const CACHE_KEY = 'cestahorro_catalogo_v2'; // Llave de caché renovada
 
         const tiendas = {
             "Promofarma": { envio: 4.00, envioGratisDesde: 49.00 },
@@ -186,11 +188,11 @@
             return { activo: false, ahorro: 0, codigo: '' };
         }
 
-        // ¡NUEVO! Función que procesa los datos y pinta la interfaz
-        function procesarDatos(csvData) {
-            const filas = csvData.split(/\r?\n/).slice(1);
+        // Función centralizada para procesar los datos del CSV
+        function procesarDatosCSV(data) {
+            const filas = data.split(/\r?\n/).slice(1);
             const datalist = document.getElementById('lista-productos');
-            datalist.innerHTML = ''; // Limpiar por si estamos actualizando en segundo plano
+            datalist.innerHTML = ''; 
             catalogo = {};
             
             filas.forEach(fila => {
@@ -212,40 +214,43 @@
             });
             
             document.getElementById('status-text').textContent = "✅ COMPARADOR LISTO";
-            document.getElementById('search-section').style.opacity = "1";
+            document.getElementById('search-section').classList.remove('opacity-0');
             
-            // Solo añadimos los cajones iniciales si no hay ninguno creado
             if(document.querySelectorAll('.product-input').length === 0) {
                 addInputRow(); addInputRow();
             }
         }
 
-        // ¡NUEVO! Motor de arranque con "Caché Inteligente"
-        window.onload = async () => {
+        // ¡NUEVO! Motor de arranque ultrarrápido usando DOMContentLoaded en lugar de window.onload
+        document.addEventListener('DOMContentLoaded', () => {
             const datosGuardados = localStorage.getItem(CACHE_KEY);
             
             if (datosGuardados) {
-                // 1. Cargar AL INSTANTE desde la memoria del móvil
-                procesarDatos(datosGuardados);
+                // 1. Carga instantánea desde la memoria del móvil
+                procesarDatosCSV(datosGuardados);
                 
-                // 2. Comprobar a Google en segundo plano sin molestar al usuario
-                fetch(URL_EXCEL)
-                    .then(response => response.text())
-                    .then(data => {
-                        localStorage.setItem(CACHE_KEY, data); // Actualiza la memoria para la próxima vez
-                        procesarDatos(data); // Aplica los nuevos precios silenciosamente
-                    })
-                    .catch(e => console.log("Fallo en sincronización secundaria, usando caché."));
+                // 2. Verificación silenciosa en segundo plano (retrasada 1 seg para no saturar)
+                setTimeout(() => {
+                    fetch(URL_EXCEL)
+                        .then(res => res.text())
+                        .then(data => {
+                            if (data !== datosGuardados) {
+                                localStorage.setItem(CACHE_KEY, data);
+                                procesarDatosCSV(data); // Actualiza si hubo cambios
+                            }
+                        }).catch(e => console.log("Modo sin conexión."));
+                }, 1000);
             } else {
-                // Si es la primera vez que entra, esperamos a Google
-                try {
-                    const response = await fetch(URL_EXCEL);
-                    const data = await response.text();
-                    localStorage.setItem(CACHE_KEY, data); // Guardamos para el futuro
-                    procesarDatos(data);
-                } catch (e) { document.getElementById('status-text').textContent = "❌ ERROR DE CONEXIÓN"; }
+                // Si es la primera vez en la vida que entra
+                fetch(URL_EXCEL)
+                    .then(res => res.text())
+                    .then(data => {
+                        localStorage.setItem(CACHE_KEY, data);
+                        procesarDatosCSV(data);
+                    })
+                    .catch(e => { document.getElementById('status-text').textContent = "❌ ERROR DE CONEXIÓN"; });
             }
-        };
+        });
 
         function abrirMenu() { document.getElementById('menu-lateral').classList.remove('-translate-x-full'); document.getElementById('menu-overlay').classList.remove('hidden'); setTimeout(()=>document.getElementById('menu-overlay').classList.remove('opacity-0'),10); }
         function cerrarMenu() { document.getElementById('menu-lateral').classList.add('-translate-x-full'); document.getElementById('menu-overlay').classList.add('opacity-0'); setTimeout(()=>document.getElementById('menu-overlay').classList.add('hidden'),300); }
@@ -263,7 +268,7 @@
                         ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
                     </select>
                 </div>
-                <button onclick="removeInputRow('${div.id}')" class="bg-red-50 text-red-400 p-3 rounded-2xl hover:bg-red-500 hover:text-white transition-colors active:scale-90">
+                <button onclick="removeInputRow('${div.id}')" class="bg-red-50 text-red-400 p-3 rounded-2xl hover:bg-red-500 hover:text-white transition-colors active:scale-90 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 </button>
             `;
@@ -350,11 +355,11 @@
                 opts.slice(0, 3).forEach((o, idx) => {
                     let esG = idx === 0;
                     html += `
-                    <div class="${esG ? 'bg-white border-accent-gold border-4 shadow-[0_10px_30px_rgba(245,158,11,0.3)]' : 'bg-white/80 border-slate-100 border-2 backdrop-blur-sm'} p-7 rounded-[40px] relative overflow-hidden transition-all duration-500 animate-in fade-in slide-in-from-bottom-5">
+                    <div class="${esG ? 'bg-white border-accent-gold border-4 shadow-[0_10px_30px_rgba(245,158,11,0.3)]' : 'bg-white/80 border-slate-100 border-2 backdrop-blur-sm mt-6'} p-7 rounded-[40px] relative overflow-hidden transition-all duration-500 animate-in fade-in slide-in-from-bottom-5">
                         
-                        ${esG && ahorro > 1 ? `<div class="absolute -right-12 top-6 bg-accent-gold text-white text-xs font-black px-16 py-2 rotate-45 shadow-lg uppercase tracking-wider border-b-2 border-amber-600 drop-shadow-md relative z-20">¡Ahorras ${ahorro.toFixed(2)}€!</div>` : ''}
+                        ${esG && ahorro > 1 ? `<div class="absolute top-8 -right-16 w-64 bg-accent-gold text-white text-[12px] font-black py-2.5 text-center rotate-45 shadow-md z-10 uppercase tracking-widest border-b-2 border-amber-600 drop-shadow-md">¡Ahorras ${ahorro.toFixed(2)}€!</div>` : ''}
                         
-                        <div class="text-center mb-7 mt-2">
+                        <div class="text-center mb-7 mt-2 relative z-0">
                             <span class="text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter shadow-inner ${o.tipo === 'unica' ? 'bg-slate-100 text-slate-500' : 'bg-accent-violet/10 text-accent-violet'}">${o.tipo === 'unica' ? '📦 Entrega única' : '✂️ Compra dividida'}</span>
                             <h3 class="text-xl font-black mt-4 text-slate-900 leading-tight tracking-tighter">${o.titulo}</h3>
                             <div class="text-5xl font-black mt-2.5 ${esG ? 'text-mint-600' : 'text-slate-900'} tracking-tighter">${o.total.toFixed(2)}<span class="text-2xl ml-1">€</span></div>
@@ -407,7 +412,7 @@
                     </div>`;
                 });
             }
-            html += `<button onclick="location.reload()" class="w-full text-slate-400 font-bold text-[10px] py-4 uppercase tracking-widest hover:text-accent-violet transition-colors">← Nueva búsqueda</button>`;
+            html += `<button onclick="location.reload()" class="w-full text-slate-400 font-bold text-[10px] py-4 uppercase tracking-widest hover:text-accent-violet transition-colors mt-4">← Nueva búsqueda</button>`;
             res.innerHTML = html; res.classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
