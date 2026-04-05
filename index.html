@@ -30,19 +30,15 @@
         
         <nav class="flex-1 px-5 py-6 space-y-2 overflow-y-auto">
             <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">Nuestros Sectores</h3>
-            
             <a href="#" onclick="cerrarMenu()" class="flex items-center gap-3 text-slate-700 font-bold text-sm bg-emerald-50 rounded-xl px-3 py-3 border border-emerald-100 transition-colors">
                 <span class="text-lg">🏥</span> Farmacia y Bebé <span class="ml-auto text-[9px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-black">ACTUAL</span>
             </a>
-            
             <a href="#" onclick="alert('¡Estamos trabajando en ello! Pronto podrás ahorrar también en los productos para tus mascotas. 🐶')" class="flex items-center gap-3 text-slate-500 font-bold text-sm hover:bg-slate-50 rounded-xl px-3 py-3 transition-colors opacity-70">
                 <span class="text-lg opacity-50 grayscale">🐶</span> Mascotas <span class="ml-auto text-[8px] bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full uppercase">Pronto</span>
             </a>
-            
             <a href="#" onclick="alert('¡Estamos trabajando en ello! Pronto podrás encontrar el mejor precio en componentes y tecnología. 💻')" class="flex items-center gap-3 text-slate-500 font-bold text-sm hover:bg-slate-50 rounded-xl px-3 py-3 transition-colors opacity-70">
                 <span class="text-lg opacity-50 grayscale">💻</span> Informática <span class="ml-auto text-[8px] bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full uppercase">Pronto</span>
             </a>
-            
             <a href="#" onclick="alert('¡Estamos trabajando en ello! Las mejores marcas de belleza al mejor precio están en camino. ✨')" class="flex items-center gap-3 text-slate-500 font-bold text-sm hover:bg-slate-50 rounded-xl px-3 py-3 transition-colors opacity-70">
                 <span class="text-lg opacity-50 grayscale">✨</span> Alta Belleza <span class="ml-auto text-[8px] bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full uppercase">Pronto</span>
             </a>
@@ -59,15 +55,12 @@
         <button onclick="abrirMenu()" class="absolute top-8 left-6 text-emerald-100 hover:text-white transition-colors active:scale-95">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
-        
         <h1 class="text-3xl font-black mb-1 tracking-tighter italic mt-2">🛒 CESTAHORRO</h1>
         <p class="text-emerald-100 text-[10px] font-semibold uppercase tracking-widest opacity-80" id="status-text">Sincronizando catálogo...</p>
     </header>
 
     <main class="max-w-md mx-auto px-5">
-        
         <div id="search-section" class="bg-white p-5 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 mb-6 opacity-0 transition-opacity duration-500">
-            
             <div class="mb-6 bg-slate-50 p-3.5 rounded-2xl border border-slate-100 shadow-inner">
                 <div class="flex items-center gap-2 mb-2">
                     <span class="text-xl">🏥</span>
@@ -118,6 +111,17 @@
             "Farmacia Top": { envio: 3.99, envioGratisDesde: 59.00 }
         };
 
+        // ¡NUEVO! Base de datos de los enlaces oficiales de las tiendas
+        const enlacesTiendas = {
+            "Promofarma": "https://www.promofarma.com/",
+            "Atida": "https://www.atida.com/es-es",
+            "Dosfarma": "https://www.dosfarma.com/",
+            "Farmacia Jiménez": "https://www.farmaciajimenez.com/",
+            "Farmacia Eva Contreras": "https://www.farmaciaevacontreras.com/",
+            "Farmacia Barata": "https://www.farmaciabarata.es/",
+            "Farmacia Top": "https://www.farmaciatop.com/"
+        };
+
         let catalogo = {};
         let inputCount = 0;
         const inputsContainer = document.getElementById('inputs-container');
@@ -149,7 +153,6 @@
             }
         };
 
-        // ¡NUEVO! Lógica para abrir y cerrar el menú
         function abrirMenu() {
             const menu = document.getElementById('menu-lateral');
             const overlay = document.getElementById('menu-overlay');
@@ -291,6 +294,8 @@
                                      <span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">⚠️ Te faltan ${faltaParaGratis.toFixed(2)}€ para envío gratis</span>
                                    </div>`;
 
+                            let linkTienda = enlacesTiendas[r.t] || "#";
+
                             return `
                             <div class="bg-slate-50 rounded-2xl p-4 mb-3 border border-slate-100 text-left">
                                 <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-3">
@@ -298,6 +303,10 @@
                                     ${htmlEnvio}
                                 </div>
                                 ${pds.map(p => `<div class="flex justify-between text-xs font-bold text-slate-600 mb-1.5"><span class="truncate pr-4 capitalize">${p.c}x ${p.n}</span><span>${p.p.toFixed(2)}€</span></div>`).join('')}
+                                
+                                <a href="${linkTienda}" target="_blank" class="mt-4 flex items-center justify-center w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] py-3 rounded-xl transition-colors uppercase tracking-widest shadow-sm">
+                                    Ir a ${r.t} ➔
+                                </a>
                             </div>`;
                         }).join('')}
                     </div>`;
