@@ -111,7 +111,6 @@
             "Farmacia Top": { envio: 3.99, envioGratisDesde: 59.00 }
         };
 
-        // ¡NUEVO! Base de datos de los enlaces oficiales de las tiendas
         const enlacesTiendas = {
             "Promofarma": "https://www.promofarma.com/",
             "Atida": "https://www.atida.com/es-es",
@@ -287,6 +286,7 @@
                         ${o.resumen.map(r => {
                             let pds = o.distribucion.filter(x => x.t === r.t);
                             let faltaParaGratis = r.u - r.s;
+                            let totalTienda = r.s + r.e; // Calculamos el total de esta tienda
                             let htmlEnvio = r.e === 0 
                                 ? `<span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-1 rounded-lg shadow-sm">🎉 ENVÍO GRATIS</span>`
                                 : `<div class="text-right">
@@ -304,6 +304,11 @@
                                 </div>
                                 ${pds.map(p => `<div class="flex justify-between text-xs font-bold text-slate-600 mb-1.5"><span class="truncate pr-4 capitalize">${p.c}x ${p.n}</span><span>${p.p.toFixed(2)}€</span></div>`).join('')}
                                 
+                                <div class="border-t border-slate-200/60 mt-3 pt-3 flex justify-between items-center">
+                                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Total en esta tienda:</span>
+                                    <span class="text-sm font-black text-slate-800">${totalTienda.toFixed(2)}€</span>
+                                </div>
+
                                 <a href="${linkTienda}" target="_blank" class="mt-4 flex items-center justify-center w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] py-3 rounded-xl transition-colors uppercase tracking-widest shadow-sm">
                                     Ir a ${r.t} ➔
                                 </a>
