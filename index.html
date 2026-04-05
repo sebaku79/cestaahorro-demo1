@@ -45,50 +45,6 @@
         .blob-1 { top: -10%; left: -10%; width: 40%; height: 40%; background: #ccfbf1; }
         .blob-2 { bottom: -10%; right: -10%; width: 50%; height: 50%; background: #e9d5ff; }
         .blob-3 { top: 40%; left: 30%; width: 20%; height: 20%; background: #fef3c7; }
-
-        /* ¡NUEVO! Branding "Cestahorro" con malla de carrito integrada en el nombre semántico */
-        .brand-container { display: inline-flex; align-items: center; justify-content: center; }
-        .brand-cesta { color: white; font-weight: 800; font-style: italic; tracking-tight; }
-        .brand-orro-cart {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            padding: 2px 6px;
-            margin-left: 1px;
-            font-style: normal;
-            border-radius: 4px;
-            /* ¡El Enrejado Técnico! Imitación de alambre con gradiente repetido */
-            background-color: transparent;
-            background-image: 
-                repeating-linear-gradient(45deg, rgba(255,255,255,0.15) 0, rgba(255,255,255,0.15) 1px, transparent 1px, transparent 4px),
-                repeating-linear-gradient(-45deg, rgba(255,255,255,0.15) 0, rgba(255,255,255,0.15) 1px, transparent 1px, transparent 4px);
-            border: 1px solid rgba(255,255,255,0.3); /* Contorno metálico */
-        }
-        .brand-orro-cart .orro-text { color: white; font-weight: 900; tracking-tighter; position: relative; z-index: 1; }
-        
-        /* Ruedas y asa del carrito integradas */
-        .brand-orro-cart::before {
-            content: ''; position: absolute; top: -5px; right: 2px;
-            width: 10px; height: 3px; background-color: rgba(255,255,255,0.6);
-            border-radius: 2px; transform: rotate(-30deg);
-        }
-        .brand-orro-cart::after {
-            content: ''; position: absolute; bottom: -4px; left: 3px;
-            width: 5px; height: 5px; background-color: white;
-            border-radius: 50%; box-shadow: 12px 0 white;
-        }
-
-        /* Branding modificado para el Sidebar (fondo claro, necesitamos colores oscuros para el carrito) */
-        #menu-lateral .brand-orro-cart {
-            background-image: 
-                repeating-linear-gradient(45deg, rgba(20,184,166,0.1) 0, rgba(20,184,166,0.1) 1px, transparent 1px, transparent 4px),
-                repeating-linear-gradient(-45deg, rgba(20,184,166,0.1) 0, rgba(20,184,166,0.1) 1px, transparent 1px, transparent 4px);
-            border-color: rgba(20,184,166,0.2);
-        }
-        #menu-lateral .brand-orro-cart .orro-text { color: #0f766e; }
-        #menu-lateral .brand-orro-cart::before { background-color: rgba(20,184,166,0.4); }
-        #menu-lateral .brand-orro-cart::after { background-color: #0f766e; box-shadow: 12px 0 #0f766e; }
-
     </style>
 </head>
 <body class="text-slate-800 font-sans min-h-screen pb-10">
@@ -105,9 +61,11 @@
 
     <div id="menu-lateral" class="fixed top-0 left-0 h-full w-[70%] max-w-[280px] glass-panel z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col rounded-r-3xl border-r border-white/20">
         <div class="bg-gradient-to-br from-mint-600 to-accent-violet text-white p-6 rounded-br-3xl shadow-lg border-b border-white/10">
-            <div class="text-3xl font-black mt-4 brand-container">
-                <span class="brand-cesta text-white">Cesta</span>
-                <span class="brand-orro-cart"><span class="orro-text">horro</span></span>
+            <div class="flex items-center gap-2 mt-4">
+                <h2 class="text-2xl font-black italic tracking-tighter">CESTAHORRO</h2>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
             </div>
             <p class="text-[10px] uppercase tracking-widest text-mint-100 mt-1.5 font-bold opacity-80">Ahorro inteligente</p>
         </div>
@@ -133,17 +91,22 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
         
-        <div class="text-3xl font-black mt-2 brand-container flex items-center justify-center">
-            <span class="brand-cesta">Cesta</span>
-            <span class="brand-orro-cart"><span class="orro-text">horro</span></span>
+        <div class="flex items-center justify-center gap-2 mt-2">
+            <h1 class="text-[32px] font-black italic tracking-tighter text-white drop-shadow-sm">CESTAHORRO</h1>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-accent-gold drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
         </div>
         
-        <p class="text-mint-100 text-[10px] font-semibold uppercase tracking-widest opacity-80" id="status-text">Sincronizando catálogo...</p>
+        <p class="text-mint-100 text-[10px] font-semibold uppercase tracking-widest opacity-80 mt-1" id="status-text">Sincronizando catálogo...</p>
         
-        <div class="absolute -bottom-4 left-6 right-6 flex justify-center gap-2">
-            <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-lg border border-slate-100">
-                <span class="text-xs">🏥</span>
-                <span class="text-[10px] font-bold text-mint-900 uppercase tracking-wide">Parafarmacia</span>
+        <div class="absolute -bottom-3.5 left-0 right-0 flex justify-center z-10">
+            <div class="flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg border border-white/10">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-mint-500"></span>
+                </span>
+                <span class="text-[9px] font-bold text-white uppercase tracking-widest">14 Tiendas en vivo</span>
             </div>
         </div>
     </header>
@@ -151,16 +114,20 @@
     <main class="max-w-md mx-auto px-5 mt-10">
         <div id="search-section" class="bg-white/70 backdrop-blur-sm p-5 rounded-[32px] shadow-xl shadow-slate-200/40 border border-white mb-6 opacity-0 transition-opacity duration-500 relative">
             
-            <div class="mb-4 bg-mint-50 px-4 py-2.5 rounded-2xl border border-mint-100 shadow-inner">
-                <div class="flex items-center gap-3 mb-1">
-                    <span class="text-2xl">⚡</span>
+            <div class="mb-4 bg-mint-50 px-4 py-3 rounded-2xl border border-mint-100 shadow-inner text-center">
+                <div class="flex items-center justify-center gap-2 mb-1">
+                    <span class="text-lg">⚡</span>
                     <h2 class="text-[11px] font-black text-mint-950 uppercase tracking-widest leading-tight">Buscador Inteligente</h2>
                 </div>
-                <p class="text-[10px] text-mint-900/80 font-medium mb-2.5">Cruzamos 14 farmacias líderes al instante.</p>
-                <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                    <span class="bg-white text-mint-700 text-[9px] font-bold px-2.5 py-1 rounded-full border border-mint-100 shadow-sm whitespace-nowrap">Dodot</span>
-                    <span class="bg-white text-rose-600 text-[9px] font-bold px-2.5 py-1 rounded-full border border-rose-100 shadow-sm whitespace-nowrap italic">Elvive</span>
-                    <span class="bg-white text-accent-violet text-[9px] font-bold px-2.5 py-1 rounded-full border border-violet-100 shadow-sm whitespace-nowrap">Kijimea</span>
+                <p class="text-[10px] text-mint-900/80 font-medium mb-3">Tu cesta perfecta, al menor coste posible.</p>
+                
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="bg-white text-mint-700 text-[9px] font-bold px-3 py-1 rounded-full border border-mint-100 shadow-sm">Dodot</span>
+                    <span class="bg-white text-rose-600 text-[9px] font-bold px-3 py-1 rounded-full border border-rose-100 shadow-sm italic">Elvive</span>
+                    <span class="bg-white text-accent-violet text-[9px] font-bold px-3 py-1 rounded-full border border-violet-100 shadow-sm">Mustela</span>
+                    <span class="bg-white text-slate-600 text-[9px] font-bold px-3 py-1 rounded-full border border-slate-200 shadow-sm">Blemil</span>
+                    <span class="bg-white text-blue-600 text-[9px] font-bold px-3 py-1 rounded-full border border-blue-100 shadow-sm">Isdin</span>
+                    <span class="bg-white text-amber-600 text-[9px] font-bold px-3 py-1 rounded-full border border-amber-100 shadow-sm">Kijimea</span>
                 </div>
             </div>
 
