@@ -73,71 +73,64 @@
             <a href="#" class="flex items-center gap-3.5 text-slate-500 font-medium text-sm opacity-60 px-4 py-3.5"><span class="text-lg grayscale">🐶</span> Mascotas <span class="text-[8px] bg-slate-100 px-1.5 py-0.5 rounded ml-auto">PRONTO</span></a>
             <a href="#" class="flex items-center gap-3.5 text-slate-500 font-medium text-sm opacity-60 px-4 py-3.5"><span class="text-lg grayscale">💻</span> Informática <span class="text-[8px] bg-slate-100 px-1.5 py-0.5 rounded ml-auto">PRONTO</span></a>
         </nav>
-
-        <div class="p-5 border-t border-slate-100">
-            <a href="mailto:hola@cestahorro.com" class="flex items-center justify-center gap-2 w-full py-3.5 bg-white text-slate-600 font-bold text-xs rounded-2xl shadow-sm border border-slate-100 hover:border-mint-200 hover:text-mint-700 transition-all">
-                ✉️ Contactar
-            </a>
-        </div>
     </div>
 
-    <header class="relative glass-header text-white pt-8 pb-8 px-6 shadow-xl rounded-b-[40px] text-center mb-5 flex flex-col items-center">
-        <button onclick="abrirMenu()" class="absolute top-8 left-6 z-20 text-mint-100 hover:text-white transition-colors p-1.5 bg-white/10 rounded-xl border border-white/10 active:scale-95 flex items-center justify-center">
+    <header class="relative glass-header text-white pt-6 pb-6 px-6 shadow-lg rounded-b-[30px] text-center mb-3 flex flex-col items-center">
+        <button onclick="abrirMenu()" class="absolute top-6 left-5 z-20 text-mint-100 hover:text-white transition-colors p-1.5 bg-white/10 rounded-xl border border-white/10 active:scale-95 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
         
-        <button onclick="location.reload()" class="inline-flex items-center justify-center gap-2 ml-8 hover:opacity-80 transition-opacity active:scale-95 outline-none relative z-10 pt-1">
-            <h1 class="text-[32px] font-black italic tracking-tighter text-white drop-shadow-sm leading-none">CESTAHORRO</h1>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent-gold drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <button onclick="location.reload()" class="inline-flex items-center justify-center gap-2 mx-auto hover:opacity-80 transition-opacity active:scale-95 outline-none relative z-10 pt-1">
+            <h1 class="text-3xl font-black italic tracking-tighter text-white drop-shadow-sm leading-none">CESTAHORRO</h1>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-accent-gold drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
         </button>
         
-        <p class="text-mint-100 text-[10px] font-semibold uppercase tracking-widest opacity-80 mt-2 ml-8 block" id="status-text">Cargando...</p>
+        <p class="text-mint-100 text-[9px] font-semibold uppercase tracking-widest opacity-80 mt-1.5 block" id="status-text">Cargando...</p>
         
-        <div class="absolute -bottom-3.5 left-0 right-0 flex justify-center z-10">
-            <div class="flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg border border-white/10">
+        <div class="absolute -bottom-3 left-0 right-0 flex justify-center z-10">
+            <div class="flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full shadow-md border border-white/10">
                 <span class="relative flex h-2 w-2">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-mint-500"></span>
                 </span>
-                <span class="text-[9px] font-bold text-white uppercase tracking-widest">14 Tiendas en vivo</span>
+                <span class="text-[8px] font-bold text-white uppercase tracking-widest">14 Tiendas en vivo</span>
             </div>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto px-5 mt-8">
-        <div id="search-section" class="bg-white/70 backdrop-blur-sm px-5 py-4 rounded-[32px] shadow-xl shadow-slate-200/40 border border-white mb-6 opacity-0 transition-opacity duration-500 relative">
+    <main class="max-w-md mx-auto px-4 mt-4">
+        <div id="search-section" class="bg-white/70 backdrop-blur-sm px-4 py-4 rounded-3xl shadow-xl shadow-slate-200/40 border border-white mb-4 opacity-0 transition-opacity duration-500 relative">
             
-            <div class="mb-5 bg-mint-50 px-4 py-4 rounded-2xl border border-mint-100 shadow-inner text-center">
-                <div class="flex items-center justify-center gap-2 mb-1.5">
-                    <span class="text-xl">⚡</span>
-                    <h2 class="text-sm font-black text-mint-950 uppercase tracking-widest leading-tight">Buscador Inteligente</h2>
+            <div class="mb-4 bg-mint-50 px-3 py-2.5 rounded-2xl border border-mint-100 shadow-inner flex flex-col gap-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-base">⚡</span>
+                        <h2 class="text-xs font-black text-mint-950 uppercase tracking-widest leading-tight">Buscador</h2>
+                    </div>
+                    <p class="text-[9px] text-mint-900/80 font-bold uppercase tracking-wide">El menor coste posible.</p>
                 </div>
-                <p class="text-xs text-mint-900/80 font-medium mb-4">Tu cesta perfecta, al menor coste posible.</p>
                 
-                <div class="flex flex-wrap justify-center gap-2.5">
-                    <span class="bg-white text-mint-700 text-xs font-bold px-3.5 py-1.5 rounded-full border border-mint-100 shadow-sm">Dodot</span>
-                    <span class="bg-white text-rose-600 text-xs font-bold px-3.5 py-1.5 rounded-full border border-rose-100 shadow-sm italic">Elvive</span>
-                    <span class="bg-white text-accent-violet text-xs font-bold px-3.5 py-1.5 rounded-full border border-violet-100 shadow-sm">Mustela</span>
-                    <span class="bg-white text-slate-600 text-xs font-bold px-3.5 py-1.5 rounded-full border border-slate-200 shadow-sm">Blemil</span>
-                    <span class="bg-white text-blue-600 text-xs font-bold px-3.5 py-1.5 rounded-full border border-blue-100 shadow-sm">Isdin</span>
-                    <span class="bg-white text-amber-600 text-xs font-bold px-3.5 py-1.5 rounded-full border border-amber-100 shadow-sm">Kijimea</span>
+                <div class="flex flex-nowrap overflow-x-auto pb-1 scrollbar-hide gap-2">
+                    <span class="bg-white text-mint-700 text-[10px] font-bold px-3 py-1 rounded-full border border-mint-100 shadow-sm flex-shrink-0">Dodot</span>
+                    <span class="bg-white text-rose-600 text-[10px] font-bold px-3 py-1 rounded-full border border-rose-100 shadow-sm italic flex-shrink-0">Elvive</span>
+                    <span class="bg-white text-accent-violet text-[10px] font-bold px-3 py-1 rounded-full border border-violet-100 shadow-sm flex-shrink-0">Mustela</span>
+                    <span class="bg-white text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 shadow-sm flex-shrink-0">Blemil</span>
+                    <span class="bg-white text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-100 shadow-sm flex-shrink-0">Isdin</span>
                 </div>
             </div>
 
-            <hr class="border-slate-100 mb-5">
-            <div id="inputs-container" class="space-y-4 mb-6"></div>
+            <div id="inputs-container" class="space-y-3 mb-4"></div>
             
-            <button onclick="addInputRow()" class="flex items-center justify-center gap-2.5 w-full py-4 border-2 border-dashed border-slate-300 bg-white/50 rounded-2xl text-slate-500 font-bold text-sm hover:border-mint-400 hover:text-mint-700 hover:bg-mint-50 transition-all mb-6 active:scale-95">
-                <span class="text-lg">➕</span> Añadir producto
+            <button onclick="addInputRow()" class="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-slate-300 bg-white/50 rounded-xl text-slate-500 font-bold text-xs hover:border-mint-400 hover:text-mint-700 hover:bg-mint-50 transition-all mb-4 active:scale-95">
+                <span class="text-base">➕</span> Añadir producto
             </button>
             
-            <button onclick="startOptimization()" class="w-full dynamic-cta text-white text-lg font-extrabold py-5 rounded-3xl shadow-lg shadow-mint-200 flex items-center justify-center gap-3 border border-white/20 active:scale-95">
+            <button onclick="startOptimization()" class="w-full dynamic-cta text-white text-[17px] font-extrabold py-4 rounded-2xl shadow-lg shadow-mint-200 flex items-center justify-center gap-2 border border-white/20 active:scale-95">
                 ✨ MEJOR PRECIO GLOBAL
             </button>
             
-            <p id="error-msg" class="text-amber-700 text-sm mt-5 text-center hidden font-bold bg-amber-50 p-4 rounded-xl border border-amber-200 shadow-inner leading-snug"></p>
         </div>
         <div id="results-section" class="hidden space-y-6"></div>
     </main>
@@ -213,7 +206,7 @@
             document.getElementById('status-text').textContent = "✅ COMPARADOR LISTO";
             document.getElementById('search-section').classList.remove('opacity-0');
             
-            if(document.querySelectorAll('.product-input').length === 0) {
+            if(document.querySelectorAll('.product-row').length === 0) {
                 addInputRow(); addInputRow();
             }
         }
@@ -247,50 +240,77 @@
         function abrirMenu() { document.getElementById('menu-lateral').classList.remove('-translate-x-full'); document.getElementById('menu-overlay').classList.remove('hidden'); setTimeout(()=>document.getElementById('menu-overlay').classList.remove('opacity-0'),10); }
         function cerrarMenu() { document.getElementById('menu-lateral').classList.add('-translate-x-full'); document.getElementById('menu-overlay').classList.add('opacity-0'); setTimeout(()=>document.getElementById('menu-overlay').classList.add('hidden'),300); }
         
+        // ¡NUEVO! La estructura de la fila ahora permite inyectar el error debajo del input
         function addInputRow() {
             inputCount++;
             const div = document.createElement('div');
-            div.className = 'flex gap-2.5 items-center animate-in fade-in slide-in-from-left-2 duration-300 pr-1';
+            div.className = 'product-row animate-in fade-in slide-in-from-left-2 duration-300 flex flex-col relative';
             div.id = `row-${inputCount}`;
             div.innerHTML = `
-                <div class="flex-1 flex items-center bg-white rounded-2xl border border-slate-100 p-1 focus-within:ring-2 focus-within:ring-mint-200 focus-within:border-mint-200 transition-all overflow-hidden shadow-inner">
-                    <span class="pl-3 text-slate-300">🔍</span>
-                    <input type="text" list="lista-productos" class="product-input flex-1 bg-transparent px-2 py-3 text-[14px] outline-none font-bold text-slate-700 w-full" placeholder="Buscar producto...">
-                    <select class="qty-input bg-white rounded-xl shadow-sm border border-slate-100 text-[14px] font-black outline-none text-mint-600 px-2 py-1.5 appearance-none mr-1">
-                        ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
-                    </select>
+                <div class="flex gap-2 items-center">
+                    <div class="input-wrapper flex-1 flex items-center bg-white rounded-xl border border-slate-200 p-1 focus-within:ring-2 focus-within:ring-mint-200 focus-within:border-mint-200 transition-all overflow-hidden shadow-sm">
+                        <span class="pl-2.5 text-slate-300 text-sm">🔍</span>
+                        <input type="text" list="lista-productos" class="product-input flex-1 bg-transparent px-2 py-2.5 text-[14px] outline-none font-bold text-slate-700 w-full" placeholder="Buscar producto...">
+                        <select class="qty-input bg-slate-50 rounded-lg border border-slate-100 text-[14px] font-black outline-none text-mint-700 px-2 py-1 appearance-none mr-1">
+                            ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n}</option>`).join('')}
+                        </select>
+                    </div>
+                    <button onclick="removeInputRow('${div.id}')" class="bg-red-50 text-red-400 p-2.5 rounded-xl hover:bg-red-500 hover:text-white transition-colors active:scale-90 flex-shrink-0 border border-red-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
                 </div>
-                <button onclick="removeInputRow('${div.id}')" class="bg-red-50 text-red-400 p-3 rounded-2xl hover:bg-red-500 hover:text-white transition-colors active:scale-90 flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                </button>
+                <div class="error-container"></div>
             `;
             inputsContainer.appendChild(div);
         }
 
-        function removeInputRow(id) { if(document.querySelectorAll('.product-input').length > 1) document.getElementById(id).remove(); }
+        function removeInputRow(id) { if(document.querySelectorAll('.product-row').length > 1) document.getElementById(id).remove(); }
 
         function startOptimization() {
-            const rows = document.querySelectorAll('#inputs-container > div');
-            let buscados = []; let errorEncontrado = false; let errorMensaje = "";
+            const rows = document.querySelectorAll('.product-row');
+            let buscados = []; let errorEncontrado = false;
+            
+            // ¡NUEVO! Limpiamos errores en línea anteriores
+            rows.forEach(r => {
+                const wrapper = r.querySelector('.input-wrapper');
+                const errBox = r.querySelector('.error-container');
+                wrapper.classList.remove('ring-2', 'ring-amber-400', 'border-amber-400', 'bg-amber-50');
+                errBox.innerHTML = '';
+            });
+
             rows.forEach(r => {
                 const inp = r.querySelector('.product-input');
+                const wrapper = r.querySelector('.input-wrapper');
+                const errBox = r.querySelector('.error-container');
+                
                 if(inp && inp.value.trim() !== '') {
                     const val = inp.value.trim().toLowerCase();
                     const qty = parseInt(r.querySelector('.qty-input').value) || 1;
                     let nombreFinal = val;
+                    
                     if(!catalogo[val]) {
                         const coincidencias = Object.keys(catalogo).filter(k => k.includes(val));
-                        if(coincidencias.length === 1) { nombreFinal = coincidencias[0]; inp.value = coincidencias[0]; }
-                        else if (coincidencias.length > 1) { errorEncontrado = true; errorMensaje = `⚠️ Hay varios tamaños o tipos de "${val}". Por favor, sé un poco más específico o elígelo de la lista desplegable.`; }
-                        else { errorEncontrado = true; errorMensaje = `❌ No hemos encontrado el producto: "${val}" en nuestra base de datos.`; }
+                        if(coincidencias.length === 1) { 
+                            nombreFinal = coincidencias[0]; inp.value = coincidencias[0]; 
+                        }
+                        else { 
+                            errorEncontrado = true;
+                            // ¡NUEVO! El error se inyecta directamente debajo de la caja problemática
+                            wrapper.classList.add('ring-2', 'ring-amber-400', 'border-amber-400', 'bg-amber-50');
+                            let msg = coincidencias.length > 1 
+                                ? `<p class="text-amber-600 text-[10px] font-bold mt-1 ml-2 flex items-center gap-1"><span class="text-xs">⚠️</span> Por favor, especifica el formato en la lista.</p>` 
+                                : `<p class="text-red-500 text-[10px] font-bold mt-1 ml-2 flex items-center gap-1"><span class="text-xs">❌</span> Producto no encontrado.</p>`;
+                            errBox.innerHTML = msg;
+                        }
                     }
                     if(!errorEncontrado) buscados.push({ nombre: nombreFinal, cantidad: qty });
                 }
             });
-            const errorCaja = document.getElementById('error-msg');
-            if(errorEncontrado) { errorCaja.textContent = errorMensaje; errorCaja.classList.remove('hidden'); return; }
+            
+            if(errorEncontrado) return; // Se para la búsqueda, el cliente ve los errores en línea
             if(buscados.length === 0) return;
-            errorCaja.classList.add('hidden'); document.getElementById('search-section').classList.add('hidden');
+            
+            document.getElementById('search-section').classList.add('hidden');
             mostrarResultados(calcularMejorCesta(buscados));
         }
 
