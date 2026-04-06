@@ -51,7 +51,7 @@
         .blob-3 { top: 40%; left: 30%; width: 20%; height: 20%; background: #fef3c7; }
     </style>
 </head>
-<body class="text-slate-800 font-sans min-h-screen pb-10">
+<body class="text-slate-800 font-sans min-h-screen flex flex-col">
 
     <div class="bg-gradient-blobs">
         <div class="blob blob-1"></div>
@@ -69,6 +69,16 @@
                 <div class="bg-mint-500 h-2 rounded-full w-0" id="loading-bar"></div>
             </div>
             <p class="text-[9px] text-mint-600 font-bold uppercase tracking-widest animate-pulse">Abriendo tienda...</p>
+        </div>
+    </div>
+
+    <div id="legal-modal" class="fixed inset-0 bg-slate-950/80 z-[70] hidden opacity-0 transition-opacity duration-300 backdrop-blur-md flex items-center justify-center px-4 py-10">
+        <div class="bg-white rounded-3xl w-full max-w-lg h-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="legal-title" class="text-lg font-black text-slate-900 uppercase tracking-tighter"></h3>
+                <button onclick="closeLegal()" class="text-slate-400 hover:text-slate-900 p-2 bg-white rounded-full shadow-sm border border-slate-100 text-xl leading-none w-8 h-8 flex items-center justify-center">&times;</button>
+            </div>
+            <div id="legal-body" class="p-8 overflow-y-auto text-sm text-slate-600 leading-relaxed font-medium space-y-4"></div>
         </div>
     </div>
 
@@ -123,7 +133,7 @@
         </div>
     </header>
 
-    <main class="max-w-md mx-auto px-4 mt-6">
+    <main class="max-w-md mx-auto px-4 mt-6 flex-grow">
         <div id="search-section" class="bg-white/70 backdrop-blur-sm px-4 py-4 rounded-3xl shadow-xl shadow-slate-200/40 border border-white mb-4 opacity-0 transition-opacity duration-500 relative">
             
             <div class="mb-8 bg-mint-50 px-3 py-2.5 rounded-2xl border border-mint-100 shadow-inner flex flex-col gap-2 overflow-hidden">
@@ -171,10 +181,55 @@
             </button>
             
         </div>
-        <div id="results-section" class="hidden space-y-6"></div>
+        <div id="results-section" class="hidden space-y-6 pb-6"></div>
     </main>
 
+    <footer class="max-w-md mx-auto w-full px-6 py-8 mt-auto border-t border-slate-200/60 relative z-10">
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest text-center">
+            <button onclick="openLegal('aviso')" class="hover:text-mint-600 transition-colors">Aviso Legal</button>
+            <button onclick="openLegal('privacidad')" class="hover:text-mint-600 transition-colors">Privacidad</button>
+            <button onclick="openLegal('cookies')" class="hover:text-mint-600 transition-colors">Cookies</button>
+        </div>
+        <p class="text-center text-[9px] text-slate-300 mt-6 font-medium">&copy; 2024 CESTAHORRO - Inteligencia de Ahorro</p>
+    </footer>
+
     <script>
+        // --- DATOS LEGALES DE PRUEBA ---
+        const TITULAR = "[NOMBRE Y APELLIDO DE PRUEBA]";
+        const DNI = "[TU DNI O CIF]";
+        const EMAIL = "[correo-prueba@ejemplo.com]"; 
+
+        const legalTexts = {
+            aviso: {
+                title: "Aviso Legal y Términos",
+                content: `<p><b>1. Identidad:</b> El titular de esta web es ${TITULAR} con documento de identidad ${DNI} y correo de contacto ${EMAIL}.</p><p><b>2. Objeto:</b> Cestahorro es un motor de búsqueda y comparador de precios de farmacia. No vendemos productos directamente.</p><p><b>3. Enlaces de Afiliación:</b> Utilizamos enlaces de afiliación. Si haces clic en un enlace y compras en la farmacia de destino, Cestahorro puede recibir una comisión sin coste adicional para ti. Las reclamaciones sobre pedidos deben hacerse a la farmacia vendedora.</p><p><b>4. Propiedad Intelectual:</b> El diseño y código de la web son propiedad de Cestahorro. Las marcas mostradas pertenecen a sus respectivos dueños.</p>`
+            },
+            privacidad: {
+                title: "Política de Privacidad",
+                content: `<p><b>1. Responsable:</b> El responsable del tratamiento de datos es ${TITULAR}.</p><p><b>2. Uso de Datos:</b> Esta web funciona de forma anónima y no requiere registro. Si nos contactas a ${EMAIL}, usaremos tus datos únicamente para responder a tu solicitud.</p><p><b>3. Tus Derechos:</b> Puedes solicitar el acceso, rectificación o eliminación de tus datos escribiendo al correo indicado.</p>`
+            },
+            cookies: {
+                title: "Política de Cookies",
+                content: `<p><b>1. ¿Qué son?:</b> Una cookie es un pequeño archivo que se guarda en tu navegador al visitar la web.</p><p><b>2. Qué usamos:</b> Utilizamos cookies técnicas necesarias para el funcionamiento de la web, y cookies de afiliación de terceros. Estas últimas sirven para que la farmacia sepa que vienes desde Cestahorro y pueda asignarnos una comisión si compras.</p><p><b>3. Gestión:</b> Puedes bloquear o borrar las cookies desde las opciones de configuración de tu navegador.</p>`
+            }
+        };
+
+        function openLegal(key) {
+            const data = legalTexts[key];
+            document.getElementById('legal-title').textContent = data.title;
+            document.getElementById('legal-body').innerHTML = data.content;
+            const modal = document.getElementById('legal-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeLegal() {
+            const modal = document.getElementById('legal-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // --- MOTOR DEL COMPARADOR ---
         const ID_DOCUMENTO = '1r2cN8fnQI0xqb6Xo2K1lOTFWUlGdYhb1';
         const URL_EXCEL = `https://docs.google.com/spreadsheets/d/${ID_DOCUMENTO}/export?format=csv`;
         const CACHE_KEY = 'cestahorro_catalogo_v3'; 
