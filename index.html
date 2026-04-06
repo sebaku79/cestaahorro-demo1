@@ -26,6 +26,18 @@
         @keyframes dynamic-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes loading-bar { 0% { width: 0%; } 100% { width: 100%; } }
         
+        /* ¡NUEVO! Animación leve (efecto respiración/flotar) para las marcas */
+        @keyframes float-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        .tag-float-1 { animation: float-subtle 3s ease-in-out infinite; }
+        .tag-float-2 { animation: float-subtle 3.5s ease-in-out infinite 0.5s; }
+        .tag-float-3 { animation: float-subtle 4s ease-in-out infinite 1s; }
+        .tag-float-4 { animation: float-subtle 3.2s ease-in-out infinite 1.5s; }
+        .tag-float-5 { animation: float-subtle 3.8s ease-in-out infinite 0.2s; }
+
         .dynamic-cta { background: linear-gradient(-45deg, #14b8a6, #8b5cf6, #14b8a6, #f59e0b); background-size: 400% 400%; animation: dynamic-gradient 5s ease infinite; transition: transform 0.2s ease-in-out; }
         .dynamic-cta:active { transform: scale(0.96); }
 
@@ -127,12 +139,12 @@
                     <p class="text-[9px] text-mint-900/80 font-bold uppercase tracking-wide">El menor coste posible.</p>
                 </div>
                 
-                <div class="flex flex-nowrap overflow-x-auto pb-1 scrollbar-hide gap-2">
-                    <span class="bg-white text-mint-700 text-[10px] font-bold px-3 py-1 rounded-full border border-mint-100 shadow-sm flex-shrink-0">Dodot</span>
-                    <span class="bg-white text-rose-600 text-[10px] font-bold px-3 py-1 rounded-full border border-rose-100 shadow-sm italic flex-shrink-0">Elvive</span>
-                    <span class="bg-white text-accent-violet text-[10px] font-bold px-3 py-1 rounded-full border border-violet-100 shadow-sm flex-shrink-0">Mustela</span>
-                    <span class="bg-white text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 shadow-sm flex-shrink-0">Blemil</span>
-                    <span class="bg-white text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-100 shadow-sm flex-shrink-0">Isdin</span>
+                <div class="flex flex-nowrap overflow-x-auto pb-2 pt-1 px-1 scrollbar-hide gap-2">
+                    <span class="bg-white text-mint-700 text-[10px] font-bold px-3 py-1 rounded-full border border-mint-100 shadow-sm flex-shrink-0 tag-float-1">Dodot</span>
+                    <span class="bg-white text-rose-600 text-[10px] font-bold px-3 py-1 rounded-full border border-rose-100 shadow-sm italic flex-shrink-0 tag-float-2">Elvive</span>
+                    <span class="bg-white text-accent-violet text-[10px] font-bold px-3 py-1 rounded-full border border-violet-100 shadow-sm flex-shrink-0 tag-float-3">Mustela</span>
+                    <span class="bg-white text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 shadow-sm flex-shrink-0 tag-float-4">Blemil</span>
+                    <span class="bg-white text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-100 shadow-sm flex-shrink-0 tag-float-5">Isdin</span>
                 </div>
             </div>
 
@@ -403,7 +415,6 @@
                         ${o.resumen.map(r => {
                             let pds = o.distribucion.filter(x => x.t === r.t), faltaParaGratis = r.u - r.s, tDesc = r.s + r.e;
                             
-                            // ¡MODIFICADO! Diseño responsivo con flex-wrap para evitar que choquen los textos
                             let htmlEnvio = r.e === 0 
                                 ? `<span class="text-[10px] font-black text-mint-800 bg-mint-100 px-3 py-1.5 rounded-full whitespace-nowrap">🎉 ENVÍO GRATIS</span>` 
                                 : `<div class="text-right flex flex-col items-end">
