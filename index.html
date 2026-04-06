@@ -26,17 +26,23 @@
         @keyframes dynamic-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes loading-bar { 0% { width: 0%; } 100% { width: 100%; } }
         
-        /* ¡NUEVO! Animación leve (efecto respiración/flotar) para las marcas */
-        @keyframes float-subtle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
+        /* ¡NUEVO! Animación del Carrusel Infinito (Marquee) */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
-        
-        .tag-float-1 { animation: float-subtle 3s ease-in-out infinite; }
-        .tag-float-2 { animation: float-subtle 3.5s ease-in-out infinite 0.5s; }
-        .tag-float-3 { animation: float-subtle 4s ease-in-out infinite 1s; }
-        .tag-float-4 { animation: float-subtle 3.2s ease-in-out infinite 1.5s; }
-        .tag-float-5 { animation: float-subtle 3.8s ease-in-out infinite 0.2s; }
+        .animate-marquee {
+            animation: marquee 25s linear infinite;
+            width: max-content;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+        /* Máscara de degradado para difuminar los bordes derecho e izquierdo */
+        .mask-marquee {
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
 
         .dynamic-cta { background: linear-gradient(-45deg, #14b8a6, #8b5cf6, #14b8a6, #f59e0b); background-size: 400% 400%; animation: dynamic-gradient 5s ease infinite; transition: transform 0.2s ease-in-out; }
         .dynamic-cta:active { transform: scale(0.96); }
@@ -130,8 +136,8 @@
     <main class="max-w-md mx-auto px-4 mt-6">
         <div id="search-section" class="bg-white/70 backdrop-blur-sm px-4 py-4 rounded-3xl shadow-xl shadow-slate-200/40 border border-white mb-4 opacity-0 transition-opacity duration-500 relative">
             
-            <div class="mb-4 bg-mint-50 px-3 py-2.5 rounded-2xl border border-mint-100 shadow-inner flex flex-col gap-2">
-                <div class="flex items-center justify-between">
+            <div class="mb-4 bg-mint-50 px-3 py-2.5 rounded-2xl border border-mint-100 shadow-inner flex flex-col gap-2 overflow-hidden">
+                <div class="flex items-center justify-between z-10 relative">
                     <div class="flex items-center gap-1.5">
                         <span class="text-base">⚡</span>
                         <h2 class="text-xs font-black text-mint-950 uppercase tracking-widest leading-tight">Buscador</h2>
@@ -139,12 +145,28 @@
                     <p class="text-[9px] text-mint-900/80 font-bold uppercase tracking-wide">El menor coste posible.</p>
                 </div>
                 
-                <div class="flex flex-nowrap overflow-x-auto pb-2 pt-1 px-1 scrollbar-hide gap-2">
-                    <span class="bg-white text-mint-700 text-[10px] font-bold px-3 py-1 rounded-full border border-mint-100 shadow-sm flex-shrink-0 tag-float-1">Dodot</span>
-                    <span class="bg-white text-rose-600 text-[10px] font-bold px-3 py-1 rounded-full border border-rose-100 shadow-sm italic flex-shrink-0 tag-float-2">Elvive</span>
-                    <span class="bg-white text-accent-violet text-[10px] font-bold px-3 py-1 rounded-full border border-violet-100 shadow-sm flex-shrink-0 tag-float-3">Mustela</span>
-                    <span class="bg-white text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 shadow-sm flex-shrink-0 tag-float-4">Blemil</span>
-                    <span class="bg-white text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-100 shadow-sm flex-shrink-0 tag-float-5">Isdin</span>
+                <div class="relative mask-marquee py-1">
+                    <div class="flex animate-marquee gap-2 items-center">
+                        <span class="bg-white text-mint-700 text-[10px] font-bold px-3 py-1 rounded-full border border-mint-100 shadow-sm flex-shrink-0">Dodot</span>
+                        <span class="bg-white text-rose-600 text-[10px] font-bold px-3 py-1 rounded-full border border-rose-100 shadow-sm italic flex-shrink-0">Elvive</span>
+                        <span class="bg-white text-accent-violet text-[10px] font-bold px-3 py-1 rounded-full border border-violet-100 shadow-sm flex-shrink-0">Mustela</span>
+                        <span class="bg-white text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 shadow-sm flex-shrink-0">Blemil</span>
+                        <span class="bg-white text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-100 shadow-sm flex-shrink-0">Isdin</span>
+                        <span class="bg-white text-amber-600 text-[10px] font-bold px-3 py-1 rounded-full border border-amber-100 shadow-sm flex-shrink-0">Kijimea</span>
+                        <span class="bg-white text-pink-500 text-[10px] font-bold px-3 py-1 rounded-full border border-pink-100 shadow-sm flex-shrink-0">Suavinex</span>
+                        <span class="bg-white text-red-600 text-[10px] font-bold px-3 py-1 rounded-full border border-red-100 shadow-sm flex-shrink-0">Eucerin</span>
+                        <span class="bg-white text-blue-800 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-200 shadow-sm flex-shrink-0">CeraVe</span>
+                        
+                        <span class="bg-white text-mint-700 text-[10px] font-bold px-3 py-1 rounded-full border border-mint-100 shadow-sm flex-shrink-0">Dodot</span>
+                        <span class="bg-white text-rose-600 text-[10px] font-bold px-3 py-1 rounded-full border border-rose-100 shadow-sm italic flex-shrink-0">Elvive</span>
+                        <span class="bg-white text-accent-violet text-[10px] font-bold px-3 py-1 rounded-full border border-violet-100 shadow-sm flex-shrink-0">Mustela</span>
+                        <span class="bg-white text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 shadow-sm flex-shrink-0">Blemil</span>
+                        <span class="bg-white text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-100 shadow-sm flex-shrink-0">Isdin</span>
+                        <span class="bg-white text-amber-600 text-[10px] font-bold px-3 py-1 rounded-full border border-amber-100 shadow-sm flex-shrink-0">Kijimea</span>
+                        <span class="bg-white text-pink-500 text-[10px] font-bold px-3 py-1 rounded-full border border-pink-100 shadow-sm flex-shrink-0">Suavinex</span>
+                        <span class="bg-white text-red-600 text-[10px] font-bold px-3 py-1 rounded-full border border-red-100 shadow-sm flex-shrink-0">Eucerin</span>
+                        <span class="bg-white text-blue-800 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-200 shadow-sm flex-shrink-0">CeraVe</span>
+                    </div>
                 </div>
             </div>
 
