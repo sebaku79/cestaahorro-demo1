@@ -26,23 +26,13 @@
         @keyframes dynamic-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes loading-bar { 0% { width: 0%; } 100% { width: 100%; } }
         
-        /* ¡NUEVO! Animación del Carrusel Infinito (Marquee) */
         @keyframes marquee {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
-        .animate-marquee {
-            animation: marquee 25s linear infinite;
-            width: max-content;
-        }
-        .animate-marquee:hover {
-            animation-play-state: paused;
-        }
-        /* Máscara de degradado para difuminar los bordes derecho e izquierdo */
-        .mask-marquee {
-            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-        }
+        .animate-marquee { animation: marquee 25s linear infinite; width: max-content; }
+        .animate-marquee:hover { animation-play-state: paused; }
+        .mask-marquee { -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
 
         .dynamic-cta { background: linear-gradient(-45deg, #14b8a6, #8b5cf6, #14b8a6, #f59e0b); background-size: 400% 400%; animation: dynamic-gradient 5s ease infinite; transition: transform 0.2s ease-in-out; }
         .dynamic-cta:active { transform: scale(0.96); }
@@ -409,15 +399,32 @@
             const res = document.getElementById('results-section'); let html = '';
             if(opts.length > 0) {
                 let maxTotal = opts[opts.length-1].total, ahorro = maxTotal - opts[0].total;
-                
                 let msjWa = encodeURIComponent(`¡Acabo de ahorrar ${ahorro.toFixed(2)}€ en mi compra de farmacia con Cestahorro! 🛒✨ Descúbrelo aquí: https://cestahorro.com`);
 
                 opts.slice(0, 3).forEach((o, idx) => {
                     let esG = idx === 0;
+                    
+                    // ¡NUEVA LÓGICA DE INTELIGENCIA HÍBRIDA!
+                    // Verificamos si es la opción 2, si la ganadora era dividida, si esta es única, y si la diferencia es de 1€ o menos.
+                    let esComoda = (idx === 1 && opts[0].tipo === 'dividida' && o.tipo === 'unica' && (o.total - opts[0].total <= 1.00));
+                    
+                    // Clases dinámicas según el premio
+                    let borderClass = esG 
+                        ? 'bg-white border-accent-gold border-4 shadow-[0_10px_30px_rgba(245,158,11,0.3)]' 
+                        : (esComoda ? 'bg-white border-accent-gold border-2 shadow-lg mt-6' : 'bg-white/80 border-slate-100 border-2 backdrop-blur-sm mt-6');
+
+                    // Lazo dinámico
+                    let ribbonHTML = '';
+                    if (esG && ahorro > 1) {
+                        ribbonHTML = `<div class="absolute top-6 -right-14 w-52 bg-accent-gold text-white text-[10px] font-black py-1.5 text-center rotate-45 shadow-md z-10 uppercase tracking-widest border-b-2 border-amber-600 drop-shadow-md whitespace-nowrap">¡Ahorras ${ahorro.toFixed(2)}€!</div>`;
+                    } else if (esComoda) {
+                        ribbonHTML = `<div class="absolute top-6 -right-14 w-52 bg-accent-gold text-white text-[10px] font-black py-1.5 text-center rotate-45 shadow-md z-10 uppercase tracking-widest border-b-2 border-amber-600 drop-shadow-md whitespace-nowrap">⭐ MÁS CÓMODA</div>`;
+                    }
+
                     html += `
-                    <div class="${esG ? 'bg-white border-accent-gold border-4 shadow-[0_10px_30px_rgba(245,158,11,0.3)]' : 'bg-white/80 border-slate-100 border-2 backdrop-blur-sm mt-6'} p-6 rounded-[40px] relative overflow-hidden animate-in fade-in slide-in-from-bottom-5">
+                    <div class="${borderClass} p-6 rounded-[40px] relative overflow-hidden animate-in fade-in slide-in-from-bottom-5">
                         
-                        ${esG && ahorro > 1 ? `<div class="absolute top-6 -right-14 w-52 bg-accent-gold text-white text-[10px] font-black py-1.5 text-center rotate-45 shadow-md z-10 uppercase tracking-widest border-b-2 border-amber-600 drop-shadow-md whitespace-nowrap">¡Ahorras ${ahorro.toFixed(2)}€!</div>` : ''}
+                        ${ribbonHTML}
                         
                         <div class="text-center mb-6 mt-2">
                             <span class="text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter shadow-inner ${o.tipo === 'unica' ? 'bg-slate-100 text-slate-500' : 'bg-accent-violet/10 text-accent-violet'}">${o.tipo === 'unica' ? '📦 Entrega única' : '✂️ Compra dividida'}</span>
