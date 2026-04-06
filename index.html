@@ -24,7 +24,6 @@
     <style>
         body { background-color: #fafaf9; }
         @keyframes dynamic-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        /* Nueva animación para la barra de carga del popup */
         @keyframes loading-bar { 0% { width: 0%; } 100% { width: 100%; } }
         
         .dynamic-cta { background: linear-gradient(-45deg, #14b8a6, #8b5cf6, #14b8a6, #f59e0b); background-size: 400% 400%; animation: dynamic-gradient 5s ease infinite; transition: transform 0.2s ease-in-out; }
@@ -56,7 +55,7 @@
         <div class="bg-white rounded-[32px] p-8 text-center shadow-2xl max-w-sm w-full transform scale-95 transition-transform duration-300 border-2 border-mint-100" id="redirect-content">
             <div class="text-5xl mb-4 animate-bounce">🛒</div>
             <h3 class="text-xl font-black text-slate-800 mb-2 leading-tight">Redirigiendo a <br><span id="redirect-tienda" class="text-mint-600 text-2xl uppercase tracking-tighter"></span></h3>
-            <p class="text-xs font-bold text-slate-500 mb-6 bg-slate-50 p-3 rounded-xl border border-slate-100">Esperamos que tu experiencia en <span class="text-slate-800 font-black italic">Cestahorro</span> haya sido de tu agrado. ¡Vuelve pronto para seguir ahorrando!</p>
+            <p class="text-xs font-bold text-slate-500 mb-6 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed">Esperamos que tu experiencia en <span class="text-slate-800 font-black italic">Cestahorro</span> haya sido de tu agrado. ¡Vuelve pronto para seguir ahorrando!</p>
             
             <div class="w-full bg-mint-50 rounded-full h-2 mb-2 overflow-hidden shadow-inner">
                 <div class="bg-mint-500 h-2 rounded-full w-0" id="loading-bar"></div>
@@ -186,32 +185,26 @@
         let inputCount = 0;
         const inputsContainer = document.getElementById('inputs-container');
 
-        // ¡NUEVO! Función para mostrar el modal y redirigir
         function redirigirTienda(nombreTienda, urlDestino) {
             document.getElementById('redirect-tienda').textContent = nombreTienda;
             const modal = document.getElementById('redirect-modal');
             const content = document.getElementById('redirect-content');
             const barra = document.getElementById('loading-bar');
             
-            // Mostrar modal
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
             setTimeout(() => content.classList.remove('scale-95'), 10);
             
-            // Iniciar animación de la barra de carga
             barra.style.animation = 'none';
-            barra.offsetHeight; /* trigger reflow */
-            barra.style.animation = 'loading-bar 1.5s ease-in-out forwards';
+            barra.offsetHeight; 
+            barra.style.animation = 'loading-bar 3.5s ease-in-out forwards';
 
-            // Redirigir a los 1.5 segundos
             setTimeout(() => {
                 window.open(urlDestino, '_blank');
-                
-                // Ocultar modal para cuando vuelvan a la pestaña
                 modal.classList.add('opacity-0');
                 content.classList.add('scale-95');
                 setTimeout(() => modal.classList.add('hidden'), 300);
-            }, 1500);
+            }, 3500); 
         }
 
         function evaluarCupon(tienda, subtotal) {
@@ -410,9 +403,9 @@
                         ${o.resumen.map(r => {
                             let pds = o.distribucion.filter(x => x.t === r.t), faltaParaGratis = r.u - r.s, tDesc = r.s + r.e;
                             
-                            // ¡NUEVO! Alerta de envío mucho más grande y llamativa
+                            // ¡MODIFICADO! Diseño responsivo con flex-wrap para evitar que choquen los textos
                             let htmlEnvio = r.e === 0 
-                                ? `<span class="text-[10px] font-black text-mint-800 bg-mint-100 px-3 py-1.5 rounded-full">🎉 ENVÍO GRATIS</span>` 
+                                ? `<span class="text-[10px] font-black text-mint-800 bg-mint-100 px-3 py-1.5 rounded-full whitespace-nowrap">🎉 ENVÍO GRATIS</span>` 
                                 : `<div class="text-right flex flex-col items-end">
                                      <span class="text-[11px] font-bold text-slate-500 mb-1">+${r.e.toFixed(2)}€ ENVÍO</span>
                                      <span class="text-[11px] font-black text-amber-700 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200 shadow-sm whitespace-nowrap">⚠️ Faltan ${faltaParaGratis.toFixed(2)}€ <span class="text-[9px] uppercase tracking-wide opacity-80">para gratis</span></span>
@@ -420,8 +413,8 @@
 
                             return `
                             <div class="bg-slate-50 rounded-3xl p-5 mb-4 border border-slate-100 text-left shadow-inner">
-                                <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-4">
-                                    <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-widest">${r.t}</span>
+                                <div class="flex flex-wrap justify-between items-start border-b border-slate-200 pb-4 mb-4 gap-3">
+                                    <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-widest pt-1">${r.t}</span>
                                     ${htmlEnvio}
                                 </div>
                                 ${pds.map(p => `<div class="flex justify-between text-xs font-medium text-slate-700 mb-2"><span><span class="font-bold text-mint-700">${p.c}x</span> ${p.n}</span><span class="font-bold text-slate-900">${p.p.toFixed(2)}€</span></div>`).join('')}
