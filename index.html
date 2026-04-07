@@ -158,8 +158,8 @@
         const TITULAR = "[NOMBRE Y APELLIDO DE PRUEBA]"; const DNI = "[TU DNI O CIF]"; const EMAIL = "hola@cestahorro.com"; 
         const legalTexts = {
             aviso: { title: "Aviso Legal y Términos", content: `<p><b>1. Identidad:</b> El titular de esta web es ${TITULAR} con documento de identidad ${DNI} y correo de contacto ${EMAIL}.</p><p><b>2. Objeto:</b> Cestahorro es un motor de búsqueda y comparador de precios de farmacia. No vendemos productos directamente.</p><p><b>3. Enlaces de Afiliación:</b> Utilizamos enlaces de afiliación. Si haces clic en un enlace y compras en la farmacia de destino, Cestahorro puede recibir una comisión sin coste adicional para ti. Las reclamaciones sobre pedidos deben hacerse a la farmacia vendedora.</p><p><b>4. Propiedad Intelectual:</b> El diseño y código de la web son propiedad de Cestahorro. Las marcas mostradas pertenecen a sus respectivos dueños.</p>` },
-            privacidad: { title: "Política de Privacidad", content: `<p><b>1. Responsable:</b> El responsable del tratamiento de datos es ${TITULAR}.</p><p><b>2. Uso de Datos:</b> Esta web funciona de forma anónima y no requiere registro. Los datos de tu cesta se guardan localmente en tu dispositivo. Si nos contactas a ${EMAIL}, usaremos tus datos únicamente para responder a tu solicitud.</p><p><b>3. Tus Derechos:</b> Puedes solicitar el acceso, rectificación o eliminación de tus datos escribiendo al correo indicado.</p>` },
-            cookies: { title: "Política de Cookies", content: `<p><b>1. ¿Qué son?:</b> Una cookie es un pequeño archivo que se guarda en tu navegador al visitar la web.</p><p><b>2. Qué usamos:</b> Utilizamos cookies técnicas necesarias para el funcionamiento de la web (como la memoria de tu cesta), y cookies de afiliación de terceros. Estas últimas sirven para que la farmacia sepa que vienes desde Cestahorro y pueda asignarnos una comisión si compras.</p><p><b>3. Gestión:</b> Puedes bloquear o borrar las cookies desde las opciones de configuración de tu navegador.</p>` }
+            privacidad: { title: "Política de Privacidad", content: `<p><b>1. Responsable:</b> El responsable del tratamiento de datos es ${TITULAR}.</p><p><b>2. Uso de Datos:</b> Esta web funciona de forma anónima y no requiere registro. Los datos de tu cesta se guardan temporalmente en tu dispositivo y se borran automáticamente tras 24 horas de inactividad. Si nos contactas a ${EMAIL}, usaremos tus datos únicamente para responder a tu solicitud.</p><p><b>3. Tus Derechos:</b> Puedes solicitar el acceso, rectificación o eliminación de tus datos escribiendo al correo indicado.</p>` },
+            cookies: { title: "Política de Cookies", content: `<p><b>1. ¿Qué son?:</b> Una cookie es un pequeño archivo que se guarda en tu navegador al visitar la web.</p><p><b>2. Qué usamos:</b> Utilizamos cookies técnicas necesarias para el funcionamiento de la web, y cookies de afiliación de terceros. Estas últimas sirven para que la farmacia sepa que vienes desde Cestahorro y pueda asignarnos una comisión si compras.</p><p><b>3. Gestión:</b> Puedes bloquear o borrar las cookies desde las opciones de configuración de tu navegador.</p>` }
         };
 
         function openLegal(key) { document.getElementById('legal-title').textContent = legalTexts[key].title; document.getElementById('legal-body').innerHTML = legalTexts[key].content; const modal = document.getElementById('legal-modal'); modal.classList.remove('hidden'); setTimeout(() => modal.classList.remove('opacity-0'), 10); }
@@ -189,6 +189,7 @@
             return txt.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase().replace(/\s+/g, ' ');
         }
 
+        // --- SISTEMA DE GUARDADO CON CADUCIDAD 24H ---
         function guardarCesta() {
             const rows = document.querySelectorAll('.product-row');
             let cesta = [];
@@ -197,7 +198,9 @@
                 const qty = r.querySelector('.qty-input').value;
                 if(inp.trim() !== '') cesta.push({ n: inp, c: qty });
             });
-            localStorage.setItem(SAVED_CART_KEY, JSON.stringify(cesta));
+            // Guardamos la cesta junto con el momento exacto (timestamp)
+            const dataToSave = { items: cesta, timestamp: Date.now() };
+            localStorage.setItem(SAVED_CART_KEY, JSON.stringify(dataToSave));
         }
 
         function vaciarCesta() {
@@ -239,11 +242,21 @@
             });
             document.getElementById('status-text').textContent = "✅ COMPARADOR LISTO"; document.getElementById('search-section').classList.remove('opacity-0');
             
+            // --- CARGA DE DATOS CON COMPROBACIÓN DE 24 HORAS ---
             if(document.querySelectorAll('.product-row').length === 0) {
-                let cestaGuardada = JSON.parse(localStorage.getItem(SAVED_CART_KEY)) || [];
-                if(cestaGuardada.length > 0) {
-                    cestaGuardada.forEach(item => addInputRow(item.n, item.c));
+                let savedData = JSON.parse(localStorage.getItem(SAVED_CART_KEY));
+                const TIEMPO_LIMITE = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+                
+                if (savedData && savedData.timestamp && (Date.now() - savedData.timestamp < TIEMPO_LIMITE)) {
+                    let cestaGuardada = savedData.items || [];
+                    if(cestaGuardada.length > 0) {
+                        cestaGuardada.forEach(item => addInputRow(item.n, item.c));
+                    } else {
+                        addInputRow('', 1); addInputRow('', 1);
+                    }
                 } else {
+                    // Si no hay datos, o han pasado más de 24h, borramos y empezamos limpios
+                    localStorage.removeItem(SAVED_CART_KEY);
                     addInputRow('', 1); addInputRow('', 1);
                 }
             }
