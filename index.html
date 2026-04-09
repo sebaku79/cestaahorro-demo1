@@ -181,7 +181,8 @@
             "Farma2go": { envio: 3.99, envioGratisDesde: 59.00 }, "Pharmacius": { envio: 3.99, envioGratisDesde: 59.00 }, "Nutritienda": { envio: 3.99, envioGratisDesde: 49.00 }
         };
 
-        const enlacesTiendas = { "Promofarma": "https://www.promofarma.com/", "Atida": "https://www.atida.com/es-es", "Dosfarma": "https://www.dosfarma.com/", "Farmacia Jiménez": "https://www.farmaciajimenez.com/", "Farmacia Eva Contreras": "https://www.farmaciaevacontreras.com/", "Farmacia Barata": "https://www.farmaciabarata.es/", "Farmacia Top": "https://www.farmaciatop.com/", "Farmavazquez": "https://www.farmavazquez.com/", "Sensafarma": "https://www.sensafarma.es/", "FarmaSoler": "https://www.farmasoler.com/", "Farmacias Direct": "https://www.farmaciasdirect.com/", "Farma2go": "https://farma2go.com/", "Pharmacius": "https://www.pharmacius.com/", "Nutritienda": "https://www.nutritienda.com/" };
+        // --- CORRECCIÓN DOMINIO FARMACIA TOP ---
+        const enlacesTiendas = { "Promofarma": "https://www.promofarma.com/", "Atida": "https://www.atida.com/es-es", "Dosfarma": "https://www.dosfarma.com/", "Farmacia Jiménez": "https://www.farmaciajimenez.com/", "Farmacia Eva Contreras": "https://www.farmaciaevacontreras.com/", "Farmacia Barata": "https://www.farmaciabarata.es/", "Farmacia Top": "https://farmaciastop.es/", "Farmavazquez": "https://www.farmavazquez.com/", "Sensafarma": "https://www.sensafarma.es/", "FarmaSoler": "https://www.farmasoler.com/", "Farmacias Direct": "https://www.farmaciasdirect.com/", "Farma2go": "https://farma2go.com/", "Pharmacius": "https://www.pharmacius.com/", "Nutritienda": "https://www.nutritienda.com/" };
 
         let catalogo = {}; let inputCount = 0; const inputsContainer = document.getElementById('inputs-container');
 
@@ -198,7 +199,6 @@
                 const qty = r.querySelector('.qty-input').value;
                 if(inp.trim() !== '') cesta.push({ n: inp, c: qty });
             });
-            // Guardamos la cesta junto con el momento exacto (timestamp)
             const dataToSave = { items: cesta, timestamp: Date.now() };
             localStorage.setItem(SAVED_CART_KEY, JSON.stringify(dataToSave));
         }
@@ -242,10 +242,9 @@
             });
             document.getElementById('status-text').textContent = "✅ COMPARADOR LISTO"; document.getElementById('search-section').classList.remove('opacity-0');
             
-            // --- CARGA DE DATOS CON COMPROBACIÓN DE 24 HORAS ---
             if(document.querySelectorAll('.product-row').length === 0) {
                 let savedData = JSON.parse(localStorage.getItem(SAVED_CART_KEY));
-                const TIEMPO_LIMITE = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+                const TIEMPO_LIMITE = 24 * 60 * 60 * 1000; 
                 
                 if (savedData && savedData.timestamp && (Date.now() - savedData.timestamp < TIEMPO_LIMITE)) {
                     let cestaGuardada = savedData.items || [];
@@ -255,7 +254,6 @@
                         addInputRow('', 1); addInputRow('', 1);
                     }
                 } else {
-                    // Si no hay datos, o han pasado más de 24h, borramos y empezamos limpios
                     localStorage.removeItem(SAVED_CART_KEY);
                     addInputRow('', 1); addInputRow('', 1);
                 }
