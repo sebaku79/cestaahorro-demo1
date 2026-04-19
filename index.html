@@ -84,7 +84,7 @@
         </nav>
     </div>
 
-    <header class="relative glass-header text-white px-6 shadow-lg rounded-b-[30px] mb-3 flex items-center justify-center min-h-[90px]">
+    <header class="relative glass-header text-white px-6 shadow-lg rounded-b-[30px] mb-3 flex items-center justify-center min-h-[90px] z-30">
         <button onclick="abrirMenu()" class="absolute left-5 top-1/2 -translate-y-1/2 z-20 text-mint-100 hover:text-white transition-colors p-1.5 bg-white/10 rounded-xl border border-white/10 active:scale-95 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
@@ -95,15 +95,39 @@
             </button>
             <p class="text-mint-100 text-[9px] font-semibold uppercase tracking-widest opacity-80 mt-1 block" id="status-text">Cargando...</p>
         </div>
-        <div class="absolute -bottom-3 left-0 right-0 flex justify-center z-30">
-            <div class="flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full shadow-md border border-white/10">
+        
+        <div class="absolute -bottom-3 left-0 right-0 flex flex-col items-center z-40">
+            <button onclick="toggleTiendas()" class="flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-4 py-1.5 rounded-full shadow-md border border-white/10 hover:bg-slate-800 transition-colors active:scale-95 relative z-50">
                 <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-mint-500"></span></span>
                 <span class="text-[8px] font-bold text-white uppercase tracking-widest">14 Tiendas en vivo</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-mint-400 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            
+            <div id="dropdown-tiendas" class="w-48 bg-slate-900/95 backdrop-blur-md rounded-b-2xl border-x border-b border-white/10 shadow-2xl overflow-hidden transition-all duration-500 max-h-0 opacity-0 -mt-3 pt-4 flex flex-col relative z-40">
+                <div class="px-4 py-2 max-h-48 overflow-y-auto scrollbar-hide text-center space-y-2 pb-3">
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Promofarma</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Atida</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Dosfarma</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Farmacia Jiménez</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Farmacia Eva Contreras</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Farmacia Barata</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Farmacia Top</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Farmavazquez</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Sensafarma</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">FarmaSoler</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Farmacias Direct</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Farma2go</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Pharmacius</div>
+                    <div class="text-[10px] font-bold text-mint-100 opacity-80">Nutritienda</div>
+                </div>
+                <button onclick="toggleTiendas()" class="w-full py-2 bg-slate-800 hover:bg-mint-600 text-mint-400 hover:text-white flex justify-center items-center transition-colors border-t border-white/10 active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 11l7-7 7 7M5 19l7-7 7 7" /></svg>
+                </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto w-full px-4 mt-6 flex-grow">
+    <main class="max-w-md mx-auto w-full px-4 mt-6 flex-grow relative z-10">
         <div id="search-section" class="bg-white/70 backdrop-blur-sm px-4 py-4 rounded-3xl shadow-xl shadow-slate-200/40 border border-white mb-4 opacity-0 transition-opacity duration-500 relative">
             
             <div class="mb-6 bg-mint-50 px-3 py-2.5 rounded-2xl border border-mint-100 shadow-inner flex flex-col gap-2 overflow-hidden">
@@ -154,6 +178,18 @@
     </footer>
 
     <script>
+        // --- FUNCIÓN PARA LA PERSIANA DE TIENDAS ---
+        function toggleTiendas() {
+            const dropdown = document.getElementById('dropdown-tiendas');
+            if (dropdown.classList.contains('max-h-0')) {
+                dropdown.classList.remove('max-h-0', 'opacity-0');
+                dropdown.classList.add('max-h-64', 'opacity-100');
+            } else {
+                dropdown.classList.add('max-h-0', 'opacity-0');
+                dropdown.classList.remove('max-h-64', 'opacity-100');
+            }
+        }
+
         // --- TEXTOS LEGALES ---
         const TITULAR = "[NOMBRE Y APELLIDO DE PRUEBA]"; const DNI = "[TU DNI O CIF]"; const EMAIL = "hola@cestahorro.com"; 
         const legalTexts = {
@@ -181,7 +217,7 @@
             "Farma2go": { envio: 3.99, envioGratisDesde: 59.00 }, "Pharmacius": { envio: 3.99, envioGratisDesde: 59.00 }, "Nutritienda": { envio: 3.99, envioGratisDesde: 49.00 }
         };
 
-        // --- CORRECCIÓN DOMINIO FARMACIA TOP ---
+        // --- ENLACE DE FARMACIAS TOP CORREGIDO ---
         const enlacesTiendas = { "Promofarma": "https://www.promofarma.com/", "Atida": "https://www.atida.com/es-es", "Dosfarma": "https://www.dosfarma.com/", "Farmacia Jiménez": "https://www.farmaciajimenez.com/", "Farmacia Eva Contreras": "https://www.farmaciaevacontreras.com/", "Farmacia Barata": "https://www.farmaciabarata.es/", "Farmacia Top": "https://farmaciastop.es/", "Farmavazquez": "https://www.farmavazquez.com/", "Sensafarma": "https://www.sensafarma.es/", "FarmaSoler": "https://www.farmasoler.com/", "Farmacias Direct": "https://www.farmaciasdirect.com/", "Farma2go": "https://farma2go.com/", "Pharmacius": "https://www.pharmacius.com/", "Nutritienda": "https://www.nutritienda.com/" };
 
         let catalogo = {}; let inputCount = 0; const inputsContainer = document.getElementById('inputs-container');
