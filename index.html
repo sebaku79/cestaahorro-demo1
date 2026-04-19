@@ -101,13 +101,12 @@
                 
                 <button onclick="toggleTiendas()" class="flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-4 py-1.5 rounded-full shadow-md border border-white/10 hover:bg-slate-800 transition-colors active:scale-95 relative z-50 Pastilla-Boton">
                     <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-mint-500"></span></span>
-                    <span class="text-[8px] font-bold text-white uppercase tracking-widest">14 Tiendas en vivo</span>
+                    <span class="text-[8px] font-bold text-white uppercase tracking-widest">13 Tiendas en vivo</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-mint-400 opacity-80 transition-transform duration-300" id="fletcha-tiendas" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 
                 <div id="dropdown-tiendas" class="w-56 bg-slate-900/95 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl overflow-hidden transition-all duration-500 max-h-0 opacity-0 flex flex-col absolute top-full mt-2 z-40 Listado-Persiana">
                     <div class="px-4 py-2 max-h-56 overflow-y-auto scrollbar-hide text-center space-y-2.5 pt-4 pb-4">
-                        <div class="text-[13px] font-bold text-mint-100 opacity-90">Promofarma</div>
                         <div class="text-[13px] font-bold text-mint-100 opacity-90">Atida</div>
                         <div class="text-[13px] font-bold text-mint-100 opacity-90">Dosfarma</div>
                         <div class="text-[13px] font-bold text-mint-100 opacity-90">Farmacia Jiménez</div>
@@ -181,7 +180,6 @@
     </footer>
 
     <script>
-        // --- LIMPIEZA DE HISTORIAL AL ENTRAR (Asegura que empieza limpio) ---
         if(window.location.hash) { window.history.replaceState('', document.title, window.location.pathname); }
 
         function toggleTiendas() {
@@ -215,15 +213,16 @@
         const CACHE_KEY = 'cestahorro_catalogo_v3'; 
         const SAVED_CART_KEY = 'cestahorro_cesta_v1';
 
+        // --- PROMOFARMA ELIMINADA DEL MOTOR DE TIENDAS ---
         const tiendas = {
-            "Promofarma": { envio: 4.00, envioGratisDesde: 49.00 }, "Atida": { envio: 2.99, envioGratisDesde: 49.00 }, "Dosfarma": { envio: 3.99, envioGratisDesde: 49.00 },
+            "Atida": { envio: 2.99, envioGratisDesde: 49.00 }, "Dosfarma": { envio: 3.99, envioGratisDesde: 49.00 },
             "Farmacia Jiménez": { envio: 3.99, envioGratisDesde: 50.00 }, "Farmacia Eva Contreras": { envio: 3.99, envioGratisDesde: 50.00 }, "Farmacia Barata": { envio: 3.99, envioGratisDesde: 65.00 },
             "Farmacia Top": { envio: 3.99, envioGratisDesde: 59.00 }, "Farmavazquez": { envio: 3.99, envioGratisDesde: 59.00 }, "Sensafarma": { envio: 5.00, envioGratisDesde: 49.00 },
             "FarmaSoler": { envio: 3.99, envioGratisDesde: 60.00, cupon: { codigo: '5MENOS', porcentaje: 0.05, minimo: 59.00, expira: '2026-04-05' } }, "Farmacias Direct": { envio: 3.99, envioGratisDesde: 59.00 },
             "Farma2go": { envio: 3.99, envioGratisDesde: 59.00 }, "Pharmacius": { envio: 3.99, envioGratisDesde: 59.00 }, "Nutritienda": { envio: 3.99, envioGratisDesde: 49.00 }
         };
 
-        const enlacesTiendas = { "Promofarma": "https://www.promofarma.com/", "Atida": "https://www.atida.com/es-es", "Dosfarma": "https://www.dosfarma.com/", "Farmacia Jiménez": "https://www.farmaciajimenez.com/", "Farmacia Eva Contreras": "https://www.farmaciaevacontreras.com/", "Farmacia Barata": "https://www.farmaciabarata.es/", "Farmacia Top": "https://farmaciastop.es/", "Farmavazquez": "https://www.farmavazquez.com/", "Sensafarma": "https://www.sensafarma.es/", "FarmaSoler": "https://www.farmasoler.com/", "Farmacias Direct": "https://www.farmaciasdirect.com/", "Farma2go": "https://farma2go.com/", "Pharmacius": "https://www.pharmacius.com/", "Nutritienda": "https://www.nutritienda.com/" };
+        const enlacesTiendas = { "Atida": "https://www.atida.com/es-es", "Dosfarma": "https://www.dosfarma.com/", "Farmacia Jiménez": "https://www.farmaciajimenez.com/", "Farmacia Eva Contreras": "https://www.farmaciaevacontreras.com/", "Farmacia Barata": "https://www.farmaciabarata.es/", "Farmacia Top": "https://farmaciastop.es/", "Farmavazquez": "https://www.farmavazquez.com/", "Sensafarma": "https://www.sensafarma.es/", "FarmaSoler": "https://www.farmasoler.com/", "Farmacias Direct": "https://www.farmaciasdirect.com/", "Farma2go": "https://farma2go.com/", "Pharmacius": "https://www.pharmacius.com/", "Nutritienda": "https://www.nutritienda.com/" };
 
         let catalogo = {}; let inputCount = 0; const inputsContainer = document.getElementById('inputs-container');
 
@@ -276,6 +275,7 @@
                     const imagen = columnas[1] ? columnas[1].replace(/"/g, '').trim() : '';
                     const p = (v) => { if(!v || v.trim()==='') return NaN; let val = parseFloat(v.replace(/"/g, '').trim().replace(',', '.')); return (val > 1000) ? val / 100 : val; };
                     
+                    // Seguimos leyendo la columna 2 para no romper el orden de las siguientes columnas de tu Excel
                     catalogo[nombreLimpio] = { "original": nombreOriginal, "imagen": imagen, "Promofarma": p(columnas[2]), "Atida": p(columnas[3]), "Dosfarma": p(columnas[4]), "Farmacia Jiménez": p(columnas[5]), "Farmacia Eva Contreras": p(columnas[6]), "Farmacia Barata": p(columnas[7]), "Farmacia Top": p(columnas[8]), "Farmavazquez": p(columnas[9]), "Sensafarma": p(columnas[10]), "FarmaSoler": p(columnas[11]), "Farmacias Direct": p(columnas[12]), "Farma2go": p(columnas[13]), "Pharmacius": p(columnas[14]), "Nutritienda": p(columnas[15]) };
                     let opt = document.createElement('option'); opt.value = nombreOriginal; datalist.appendChild(opt);
                 }
@@ -337,7 +337,6 @@
             });
             if(errorEncontrado || buscados.length === 0) return;
             
-            // --- TRUCO DEL BOTÓN ATRÁS DEL MÓVIL ---
             if(window.location.hash !== '#resultados') {
                 history.pushState({vista: 'resultados'}, '', '#resultados');
             }
@@ -445,12 +444,10 @@
                     </div>`;
                 });
             }
-            // También he modificado el botón de "Nueva Búsqueda" para que actúe como el botón atrás en vez de recargar la página entera
             html += `<button onclick="window.history.back()" class="w-full text-slate-400 font-bold text-[10px] py-4 uppercase tracking-widest mt-4">← Nueva búsqueda</button>`;
             res.innerHTML = html; res.classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- LISTENER DEL BOTÓN ATRÁS DEL MÓVIL ---
         window.addEventListener('popstate', function(event) {
             if(window.location.hash !== '#resultados') {
                 const resultsSection = document.getElementById('results-section');
