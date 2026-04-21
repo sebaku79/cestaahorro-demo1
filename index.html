@@ -2,244 +2,481 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cestahorro - El comparador de precios de farmacia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cestahorro - Tu Ahorro Inteligente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Geologica', 'sans-serif'], },
+                    colors: {
+                        mint: { 50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0f9688', 700: '#0f766e', 800: '#115e59', 900: '#134e4a', 950: '#042f2e', },
+                        accent: { gold: '#f59e0b', violet: '#8b5cf6' }
+                    },
+                }
+            }
+        }
+    </script>
     <style>
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .modal-bg { background-color: rgba(0, 0, 0, 0.5); }
-        .tab-active { border-bottom: 3px solid #2563eb; color: #2563eb; }
+        html, body { max-width: 100vw; overflow-x: hidden; background-color: #fafaf9; }
+        @keyframes dynamic-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes loading-bar { 0% { width: 0%; } 100% { width: 100%; } }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-marquee { animation: marquee 25s linear infinite; width: max-content; }
+        .animate-marquee:hover { animation-play-state: paused; }
+        .mask-marquee { -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+        .dynamic-cta { background: linear-gradient(-45deg, #14b8a6, #8b5cf6, #14b8a6, #f59e0b); background-size: 400% 400%; animation: dynamic-gradient 5s ease infinite; transition: transform 0.2s ease-in-out; }
+        .dynamic-cta:active { transform: scale(0.96); }
+        .glass-header { background: rgba(20, 184, 166, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        input, select { font-size: 16px !important; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .bg-gradient-blobs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.2; pointer-events: none; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; }
+        .blob-1 { top: -10%; left: -10%; width: 40%; height: 40%; background: #ccfbf1; }
+        .blob-2 { bottom: -10%; right: -10%; width: 50%; height: 50%; background: #e9d5ff; }
+        .blob-3 { top: 40%; left: 30%; width: 20%; height: 20%; background: #fef3c7; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+<body class="text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <header class="bg-white shadow-sm sticky top-0 z-40">
-        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-extrabold text-blue-600 tracking-tight">Cestahorro<span class="text-green-500">.es</span></h1>
-            <div id="statusTiendas" class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full flex items-center">
-                <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                Actualizando precios...
+    <div class="bg-gradient-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
+
+    <div id="redirect-modal" class="fixed inset-0 bg-slate-950/70 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-center justify-center px-5">
+        <div class="bg-white rounded-[32px] p-8 text-center shadow-2xl max-w-sm w-full transform scale-95 transition-transform duration-300 border-2 border-mint-100" id="redirect-content">
+            <div class="text-5xl mb-4 animate-bounce">🛒</div>
+            <h3 class="text-xl font-black text-slate-800 mb-2 leading-tight">Redirigiendo a <br><span id="redirect-tienda" class="text-mint-600 text-2xl uppercase tracking-tighter"></span></h3>
+            <p class="text-xs font-bold text-slate-500 mb-6 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed">Esperamos que tu experiencia en <span class="text-slate-800 font-black italic">Cestahorro</span> haya sido de tu agrado.</p>
+            <div class="w-full bg-mint-50 rounded-full h-2 mb-2 overflow-hidden shadow-inner"><div class="bg-mint-500 h-2 rounded-full w-0" id="loading-bar"></div></div>
+        </div>
+    </div>
+
+    <div id="legal-modal" class="fixed inset-0 bg-slate-950/80 z-[70] hidden opacity-0 transition-opacity duration-300 backdrop-blur-md flex items-center justify-center px-4 py-10">
+        <div class="bg-white rounded-3xl w-full max-w-lg h-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="legal-title" class="text-lg font-black text-slate-900 uppercase tracking-tighter"></h3>
+                <button onclick="closeLegal()" class="text-slate-400 hover:text-slate-900 p-2 bg-white rounded-full shadow-sm border border-slate-100 text-xl leading-none w-8 h-8 flex items-center justify-center">&times;</button>
+            </div>
+            <div id="legal-body" class="p-8 overflow-y-auto text-sm text-slate-600 leading-relaxed font-medium space-y-4"></div>
+        </div>
+    </div>
+
+    <div id="menu-overlay" onclick="cerrarMenu()" class="fixed inset-0 bg-slate-950/40 z-40 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="menu-lateral" class="fixed top-0 left-0 h-full w-[70%] max-w-[280px] glass-panel z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col rounded-r-3xl border-r border-white/20">
+        <div class="bg-gradient-to-br from-mint-600 to-accent-violet text-white p-6 rounded-br-3xl shadow-lg border-b border-white/10">
+            <div class="flex items-center gap-2 mt-4">
+                <h2 class="text-2xl font-black italic tracking-tighter text-white">CESTAHORRO</h2>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+            </div>
+            <p class="text-[10px] uppercase tracking-widest text-mint-100 mt-1.5 font-bold opacity-80">Ahorro inteligente</p>
+        </div>
+        <nav class="flex-1 px-5 py-6 space-y-2 overflow-y-auto">
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">Sectores</h3>
+            <a href="#" onclick="cerrarMenu()" class="flex items-center gap-3.5 text-mint-800 font-bold text-sm bg-mint-50 rounded-2xl px-4 py-3.5 border border-mint-100 transition-colors shadow-inner"><span class="text-lg">🏥</span> Farmacia y Bebé <span class="ml-auto text-[9px] bg-mint-600 text-white px-2 py-0.5 rounded-full font-black">ACTUAL</span></a>
+        </nav>
+    </div>
+
+    <header class="relative glass-header text-white px-6 shadow-lg rounded-b-[30px] mb-3 flex items-center justify-center min-h-[90px] z-30 overflow-visible">
+        <button onclick="abrirMenu()" class="absolute left-5 top-1/2 -translate-y-1/2 z-20 text-mint-100 hover:text-white transition-colors p-1.5 bg-white/10 rounded-xl border border-white/10 active:scale-95 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none pl-6 Header-Title-Area">
+            <button onclick="location.reload()" class="inline-flex items-center justify-center gap-2 hover:opacity-80 transition-opacity active:scale-95 outline-none pointer-events-auto">
+                <h1 class="text-3xl font-black italic tracking-tighter text-white drop-shadow-sm leading-none">CESTAHORRO</h1>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-accent-gold drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+            </button>
+            <p class="text-mint-100 text-[9px] font-semibold uppercase tracking-widest opacity-80 mt-1 block" id="status-text">Cargando...</p>
+        </div>
+        
+        <div class="absolute -bottom-3 left-0 right-0 flex justify-center z-40 Dropdown-Container">
+            <div class="relative flex flex-col items-center">
+                <button onclick="toggleTiendas()" class="flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-4 py-1.5 rounded-full shadow-md border border-white/10 hover:bg-slate-800 transition-colors active:scale-95 relative z-50 Pastilla-Boton">
+                    <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-mint-500"></span></span>
+                    <span class="text-[8px] font-bold text-white uppercase tracking-widest" id="contador-tiendas">Cargando tiendas...</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-mint-400 opacity-80 transition-transform duration-300" id="fletcha-tiendas" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div id="dropdown-tiendas" class="w-56 bg-slate-900/95 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl overflow-hidden transition-all duration-500 max-h-0 opacity-0 flex flex-col absolute top-full mt-2 z-40 Listado-Persiana">
+                    <div id="lista-tiendas-nombres" class="px-4 py-2 max-h-56 overflow-y-auto scrollbar-hide text-center space-y-2.5 pt-4 pb-4">
+                        </div>
+                    <button onclick="toggleTiendas()" class="w-full py-2.5 bg-slate-800 hover:bg-mint-600 text-mint-400 hover:text-white flex justify-center items-center transition-colors border-t border-white/10 active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 11l7-7 7 7M5 19l7-7 7 7" /></svg>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow max-w-5xl mx-auto px-4 py-8 w-full">
-        
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
-            <h2 class="text-xl font-bold mb-4 text-gray-800">Crea tu lista de la compra</h2>
-            <div class="flex gap-2 mb-6">
-                <input type="text" id="buscadorInput" placeholder="Busca productos (ej. Dodot, Isdin...)" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition">
-                <button onclick="agregarAlCarrito()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-md">Añadir</button>
+    <main class="max-w-md mx-auto w-full px-4 mt-8 flex-grow relative z-10 Main-Content">
+        <div id="search-section" class="bg-white/70 backdrop-blur-sm px-4 py-4 rounded-3xl shadow-xl shadow-slate-200/40 border border-white mb-4 transition-opacity duration-500 relative">
+            <div class="mb-6 bg-mint-50 px-3 py-2.5 rounded-2xl border border-mint-100 shadow-inner flex flex-col gap-2 overflow-hidden">
+                <div class="flex items-center justify-between z-10 relative">
+                    <div class="flex items-center gap-1.5"><span class="text-base">⚡</span><h2 class="text-xs font-black text-mint-950 uppercase tracking-widest leading-tight">Buscador</h2></div>
+                    <p class="text-[9px] text-mint-900/80 font-bold uppercase tracking-wide">El menor coste posible.</p>
+                </div>
+                <div class="relative mask-marquee py-1">
+                    <div class="flex animate-marquee gap-2 items-center">
+                        <span class="bg-white text-mint-700 text-[10px] font-bold px-3 py-1 rounded-full border border-mint-100 shadow-sm flex-shrink-0">Dodot</span>
+                        <span class="bg-white text-rose-600 text-[10px] font-bold px-3 py-1 rounded-full border border-rose-100 shadow-sm italic flex-shrink-0">Elvive</span>
+                        <span class="bg-white text-accent-violet text-[10px] font-bold px-3 py-1 rounded-full border border-violet-100 shadow-sm flex-shrink-0">Mustela</span>
+                        <span class="bg-white text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 shadow-sm flex-shrink-0">Blemil</span>
+                        <span class="bg-white text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-100 shadow-sm flex-shrink-0">Isdin</span>
+                        <span class="bg-white text-mint-700 text-[10px] font-bold px-3 py-1 rounded-full border border-mint-100 shadow-sm flex-shrink-0">Dodot</span>
+                        <span class="bg-white text-rose-600 text-[10px] font-bold px-3 py-1 rounded-full border border-rose-100 shadow-sm italic flex-shrink-0">Elvive</span>
+                        <span class="bg-white text-accent-violet text-[10px] font-bold px-3 py-1 rounded-full border border-violet-100 shadow-sm flex-shrink-0">Mustela</span>
+                    </div>
+                </div>
             </div>
 
-            <div id="carritoContainer" class="hidden">
-                <h3 class="font-semibold text-gray-700 mb-3">Tu cesta:</h3>
-                <ul id="listaCarrito" class="space-y-2 mb-6"></ul>
-                <button onclick="startOptimization()" id="btnOptimizar" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2">
-                    Buscar el precio más bajo
-                </button>
+            <div class="flex items-center justify-between mb-4 px-2 mt-4">
+                <h2 class="text-xs font-black text-mint-950 uppercase tracking-widest">Mi Cesta</h2>
+                <button onclick="vaciarCesta()" class="text-[10px] font-bold text-red-400 hover:text-red-600 uppercase tracking-wider flex items-center gap-1 bg-red-50 px-2 py-1 rounded-lg border border-red-100">🗑️ Vaciar</button>
             </div>
+
+            <datalist id="lista-productos"></datalist>
+            <div id="inputs-container" class="space-y-3 mb-4"></div>
+            
+            <button onclick="addInputRow('', 1)" class="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-slate-300 bg-white/50 rounded-xl text-slate-500 font-bold text-xs hover:border-mint-400 hover:text-mint-700 hover:bg-mint-50 transition-all mb-4 active:scale-95">
+                <span class="text-base">➕</span> Añadir producto
+            </button>
+            
+            <button onclick="startOptimization()" class="w-full mt-6 dynamic-cta text-white text-[17px] font-extrabold py-4 rounded-2xl shadow-lg shadow-mint-200 flex items-center justify-center gap-2 border border-white/20 active:scale-95">
+                ✨ MEJOR PRECIO GLOBAL
+            </button>
         </div>
-
-        <div id="loading" class="hidden text-center py-12">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mb-4"></div>
-            <p class="text-gray-500 font-medium">Calculando la mejor combinación entre 20 tiendas...</p>
-        </div>
-
-        <div id="resultados" class="space-y-6"></div>
-
+        <div id="results-section" class="hidden space-y-6 pb-6"></div>
     </main>
 
-    <footer class="bg-gray-800 text-gray-300 py-8 mt-auto">
-        <div class="max-w-5xl mx-auto px-4 text-center text-sm">
-            <p class="mb-4">&copy; 2026 Cestahorro.es. Todos los derechos reservados.</p>
-            <div class="space-x-4">
-                <a href="#" onclick="abrirModal('modalLegal')" class="hover:text-white underline">Aviso Legal y Privacidad</a>
-                <a href="#" onclick="abrirModal('modalCookies')" class="hover:text-white underline">Política de Cookies</a>
-            </div>
+    <footer class="max-w-md mx-auto w-full px-6 py-8 mt-auto border-t border-slate-200/60 relative z-10 Legal-Footer">
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest text-center">
+            <button onclick="openLegal('aviso')" class="hover:text-mint-600 transition-colors">Aviso Legal</button>
+            <button onclick="openLegal('privacidad')" class="hover:text-mint-600 transition-colors">Privacidad</button>
+            <button onclick="openLegal('cookies')" class="hover:text-mint-600 transition-colors">Cookies</button>
         </div>
+        <p class="text-center text-[9px] text-slate-300 mt-6 font-medium">&copy; 2024 CESTAHORRO - Inteligencia de Ahorro</p>
     </footer>
 
-    <div id="modalLegal" class="fixed inset-0 modal-bg hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6 md:p-8 relative">
-            <button onclick="cerrarModal('modalLegal')" class="absolute top-4 right-4 text-gray-400">✕</button>
-            <h2 class="text-2xl font-bold mb-4">Aviso Legal y Privacidad</h2>
-            <div class="text-gray-600 text-sm space-y-4">
-                <p><strong>Titular:</strong> Inmaculada García Morales | <strong>DNI:</strong> 75244448V</p>
-                <p><strong>Domicilio:</strong> [VUESTRA DIRECCIÓN COMPLETA]</p>
-                <p><strong>Contacto:</strong> info@cestahorro.es</p>
-                <p>Cestahorro.es es un comparador de precios de afiliación. No realizamos venta directa. Al pulsar en comprar, será redirigido a la farmacia correspondiente.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalCookies" class="fixed inset-0 modal-bg hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 md:p-8 relative text-sm">
-            <button onclick="cerrarModal('modalCookies')" class="absolute top-4 right-4 text-gray-400">✕</button>
-            <h2 class="text-2xl font-bold mb-4">Política de Cookies</h2>
-            <p>Utilizamos cookies propias para guardar tu cesta y cookies de terceros (Awin/Naturitas/Atida) para gestionar la afiliación cuando haces clic en comprar.</p>
-        </div>
-    </div>
-
     <script>
-        // --- CONFIGURACIÓN ---
-        const URL_EXCEL = "TU_URL_DE_GOOGLE_SHEETS_AQUI"; // Reemplaza por tu CSV
-        const enlacesTiendas = {
-            "Atida": "https://www.atida.com/es-es",
-            "Dosfarma": "https://www.dosfarma.com/",
-            "Naturitas": "https://www.naturitas.es",
-            "Farmacia Jiménez": "https://www.farmaciajimenez.com/",
-            "Farmacia Direct": "https://www.farmaciasdirect.com/",
-            "Pharmacius": "https://www.pharmacius.com/",
-            "Nutritienda": "https://www.nutritienda.com/"
-            // Añade aquí el resto hasta 20
+        // --- LIMPIEZA DE HISTORIAL AL ENTRAR ---
+        if(window.location.hash) { window.history.replaceState('', document.title, window.location.pathname); }
+
+        function toggleTiendas() {
+            const dropdown = document.getElementById('dropdown-tiendas');
+            const flecha = document.getElementById('fletcha-tiendas');
+            if (dropdown.classList.contains('max-h-0')) {
+                dropdown.classList.remove('max-h-0', 'opacity-0');
+                dropdown.classList.add('max-h-80', 'opacity-100');
+                flecha.classList.add('rotate-180');
+            } else {
+                dropdown.classList.add('max-h-0', 'opacity-0');
+                dropdown.classList.remove('max-h-80', 'opacity-100');
+                flecha.classList.remove('rotate-180');
+            }
+        }
+
+        // --- LOS 3 CAMBIOS DE CONFIGURACIÓN ESTÁN AQUÍ ---
+        const TITULAR = "Inmaculada García Morales"; const DNI = "75244448V"; const EMAIL = "info@cestahorro.es"; 
+        
+        const legalTexts = {
+            aviso: { title: "Aviso Legal y Términos", content: `<p><b>1. Identidad:</b> La titular de esta web es ${TITULAR} con documento de identidad ${DNI}, con domicilio a estos efectos en <strong>[VUESTRA DIRECCIÓN COMPLETA]</strong> y correo de contacto ${EMAIL}.</p><p><b>2. Objeto:</b> Cestahorro es un motor de búsqueda y comparador de precios de farmacia. No vendemos productos directamente.</p><p><b>3. Enlaces de Afiliación:</b> Utilizamos enlaces de afiliación. Si haces clic en un enlace y compras en la farmacia de destino, Cestahorro puede recibir una comisión sin coste adicional para ti. Las reclamaciones sobre pedidos deben hacerse a la farmacia vendedora.</p><p><b>4. Propiedad Intelectual:</b> El diseño y código de la web son propiedad de Cestahorro. Las marcas mostradas pertenecen a sus respectivos dueños.</p>` },
+            privacidad: { title: "Política de Privacidad", content: `<p><b>1. Responsable:</b> La responsable del tratamiento de datos es ${TITULAR}.</p><p><b>2. Uso de Datos:</b> Esta web funciona de forma anónima y no requiere registro. Los datos de tu cesta se guardan temporalmente en tu dispositivo y se borran automáticamente tras 24 horas de inactividad. Si nos contactas a ${EMAIL}, usaremos tus datos únicamente para responder a tu solicitud.</p><p><b>3. Tus Derechos:</b> Puedes solicitar el acceso, rectificación o eliminación de tus datos escribiendo al correo indicado.</p>` },
+            cookies: { title: "Política de Cookies", content: `<p><b>1. ¿Qué son?:</b> Una cookie es un pequeño archivo que se guarda en tu navegador al visitar la web.</p><p><b>2. Qué usamos:</b> Utilizamos cookies técnicas necesarias para el funcionamiento de la web, y cookies de afiliación de terceros (como Awin o Tradedoubler). Estas últimas sirven para que la farmacia sepa que vienes desde Cestahorro y pueda asignarnos una comisión si compras.</p><p><b>3. Gestión:</b> Puedes bloquear o borrar las cookies desde las opciones de configuración de tu navegador.</p>` }
         };
 
-        let db = [];
-        let tiendas = [];
-        let carrito = JSON.parse(localStorage.getItem('cestahorro_cart')) || [];
+        function openLegal(key) { document.getElementById('legal-title').textContent = legalTexts[key].title; document.getElementById('legal-body').innerHTML = legalTexts[key].content; const modal = document.getElementById('legal-modal'); modal.classList.remove('hidden'); setTimeout(() => modal.classList.remove('opacity-0'), 10); }
+        function closeLegal() { const modal = document.getElementById('legal-modal'); modal.classList.add('opacity-0'); setTimeout(() => modal.classList.add('hidden'), 300); }
+        function abrirMenu() { document.getElementById('menu-lateral').classList.remove('-translate-x-full'); document.getElementById('menu-overlay').classList.remove('hidden'); setTimeout(()=>document.getElementById('menu-overlay').classList.remove('opacity-0'),10); }
+        function cerrarMenu() { document.getElementById('menu-lateral').classList.add('-translate-x-full'); document.getElementById('menu-overlay').classList.add('opacity-0'); setTimeout(()=>document.getElementById('menu-overlay').classList.add('hidden'),300); }
 
-        // --- MOTOR LÓGICO ---
+        const ID_DOCUMENTO = '1r2cN8fnQI0xqb6Xo2K1lOTFWUlGdYhb1';
+        const URL_EXCEL = `https://docs.google.com/spreadsheets/d/${ID_DOCUMENTO}/export?format=csv`;
+        const CACHE_KEY = 'cestahorro_catalogo_v3'; 
+        const SAVED_CART_KEY = 'cestahorro_cesta_v1';
 
-        // 1. Descarga de datos
-        async function cargarDatos() {
-            try {
-                const res = await fetch(URL_EXCEL);
-                const data = await res.text();
-                const filas = data.split("\n").map(f => f.split(","));
-                
-                // Extraer nombres de tiendas (Fila 1) y configurar
-                tiendas = filas[0].slice(2).map((nombre, i) => ({
-                    nombre: nombre.trim(),
-                    envio: parseFloat(filas[1][i+2]) || 0,
-                    gratisDesde: parseFloat(filas[2][i+2]) || 999
-                }));
+        // Base de datos de cupones fijos y enlaces de las farmacias
+        const tiendasBaseInfo = {
+            "FarmaSoler": { cupon: { codigo: '5MENOS', porcentaje: 0.05, minimo: 59.00, expira: '2026-04-05' } }
+        };
+        
+        // --- AQUÍ SE HA AÑADIDO NATURITAS ---
+        const enlacesTiendas = { "Atida": "https://www.atida.com/es-es", "Dosfarma": "https://www.dosfarma.com/", "Naturitas": "https://www.naturitas.es", "Farmacia Jiménez": "https://www.farmaciajimenez.com/", "Farmacia Eva Contreras": "https://www.farmaciaevacontreras.com/", "Farmacia Barata": "https://www.farmaciabarata.es/", "Farmacia Top": "https://farmaciastop.es/", "Farmavazquez": "https://www.farmavazquez.com/", "Sensafarma": "https://www.sensafarma.es/", "FarmaSoler": "https://www.farmasoler.com/", "Farmacias Direct": "https://www.farmaciasdirect.com/", "Farma2go": "https://farma2go.com/", "Pharmacius": "https://www.pharmacius.com/", "Nutritienda": "https://www.nutritienda.com/" };
 
-                // Limpiar base de datos de productos
-                db = filas.slice(3).map(f => ({
-                    nombre: f[0],
-                    precios: f.slice(2).map(p => parseFloat(p) || null)
-                })).filter(p => p.nombre);
+        let catalogo = {}; let tiendas = {}; let inputCount = 0; const inputsContainer = document.getElementById('inputs-container');
 
-                document.getElementById('statusTiendas').innerHTML = `<span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span> ${tiendas.length} Tiendas activas`;
-                renderizarCarrito();
-            } catch (e) {
-                console.error("Error cargando Excel", e);
-            }
+        function limpiarTexto(txt) {
+            return txt.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase().replace(/\s+/g, ' ');
         }
 
-        // 2. Gestión de Carrito
-        function agregarAlCarrito() {
-            const input = document.getElementById('buscadorInput');
-            const nombre = input.value.trim();
-            if (!nombre) return;
-            
-            carrito.push({ nombre, cant: 1 });
-            localStorage.setItem('cestahorro_cart', JSON.stringify(carrito));
-            input.value = "";
-            renderizarCarrito();
-        }
+        // --- EXCEL DINÁMICO ---
+        function procesarDatosCSV(data) {
+            const filas = data.split(/\r?\n/);
+            if (filas.length < 4) return;
 
-        function eliminarDelCarrito(idx) {
-            carrito.splice(idx, 1);
-            localStorage.setItem('cestahorro_cart', JSON.stringify(carrito));
-            renderizarCarrito();
-        }
+            // Extraer líneas 1, 2 y 3
+            const headers = filas[0].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)|;/).map(h => h.replace(/"/g, '').trim());
+            const envios = filas[1].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)|;/).map(v => parseFloat(v.replace(/"/g, '').replace(',', '.')));
+            const umbrales = filas[2].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)|;/).map(v => parseFloat(v.replace(/"/g, '').replace(',', '.')));
 
-        function renderizarCarrito() {
-            const container = document.getElementById('carritoContainer');
-            const lista = document.getElementById('listaCarrito');
-            if (carrito.length === 0) {
-                container.classList.add('hidden');
-                return;
-            }
-            container.classList.remove('hidden');
-            lista.innerHTML = carrito.map((p, i) => `
-                <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-200 fade-in">
-                    <span class="font-medium">${p.nombre}</span>
-                    <button onclick="eliminarDelCarrito(${i})" class="text-red-500 font-bold px-2">✕</button>
-                </li>
-            `).join('');
-        }
+            tiendas = {};
+            let listaNombresHTML = '';
+            let countTiendas = 0;
 
-        // 3. Algoritmo de Optimización
-        function startOptimization() {
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('resultados').innerHTML = "";
-            
-            setTimeout(() => {
-                const resultados = calcularMejorCesta();
-                mostrarResultados(resultados);
-                document.getElementById('loading').classList.add('hidden');
-            }, 800);
-        }
-
-        function calcularMejorCesta() {
-            // Simplificación: Buscamos la mejor tienda única y la mejor combinación dividida
-            let opciones = [];
-
-            // Opción 1: Todo en la misma tienda
-            tiendas.forEach((t, tIdx) => {
-                let subtotal = 0;
-                let encontrados = 0;
-                carrito.forEach(item => {
-                    const p = db.find(prod => prod.nombre.toLowerCase().includes(item.nombre.toLowerCase()));
-                    if (p && p.precios[tIdx]) {
-                        subtotal += p.precios[tIdx] * item.cant;
-                        encontrados++;
+            for(let j = 2; j < headers.length; j++) {
+                let nombre = headers[j];
+                if(nombre && nombre !== "") {
+                    tiendas[nombre] = {
+                        envio: envios[j] || 0,
+                        envioGratisDesde: umbrales[j] || 999
+                    };
+                    if(tiendasBaseInfo[nombre] && tiendasBaseInfo[nombre].cupon) {
+                        tiendas[nombre].cupon = tiendasBaseInfo[nombre].cupon;
                     }
-                });
+                    listaNombresHTML += `<div class="text-[13px] font-bold text-mint-100 opacity-90">${nombre}</div>`;
+                    countTiendas++;
+                }
+            }
+            document.getElementById('lista-tiendas-nombres').innerHTML = listaNombresHTML;
+            document.getElementById('contador-tiendas').textContent = countTiendas + ' Tiendas en vivo';
 
-                if (encontrados === carrito.length) {
-                    const envio = subtotal >= t.gratisDesde ? 0 : t.envio;
-                    opciones.push({
-                        tipo: 'Tienda única',
-                        tienda: t.nombre,
-                        total: subtotal + envio,
-                        subtotal,
-                        envio,
-                        ahorro: 0
-                    });
+            // Extraer catálogo a partir de la línea 4
+            catalogo = {};
+            const datalist = document.getElementById('lista-productos'); datalist.innerHTML = '';
+            
+            for(let i = 3; i < filas.length; i++) {
+                let columnas = filas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)|;/);
+                if(columnas.length >= 3 && columnas[0].trim() !== '') {
+                    const nombreOriginal = columnas[0].replace(/"/g, '').trim();
+                    const nombreLimpio = limpiarTexto(nombreOriginal);
+                    const imagen = columnas[1] ? columnas[1].replace(/"/g, '').trim() : '';
+                    const p = (v) => { if(!v || v.trim()==='') return NaN; let val = parseFloat(v.replace(/"/g, '').trim().replace(',', '.')); return (val > 1000) ? val / 100 : val; };
+                    
+                    let precios = {};
+                    for(let j = 2; j < headers.length; j++) {
+                        let nombreTienda = headers[j];
+                        if(nombreTienda && nombreTienda !== "") {
+                            precios[nombreTienda] = p(columnas[j]);
+                        }
+                    }
+                    catalogo[nombreLimpio] = { "original": nombreOriginal, "imagen": imagen, ...precios };
+                    let opt = document.createElement('option'); opt.value = nombreOriginal; datalist.appendChild(opt);
+                }
+            }
+            document.getElementById('status-text').textContent = "✅ COMPARADOR LISTO";
+            document.getElementById('search-section').classList.remove('opacity-0');
+            
+            if(document.querySelectorAll('.product-row').length === 0) {
+                let savedData = JSON.parse(localStorage.getItem(SAVED_CART_KEY));
+                const TIEMPO_LIMITE = 24 * 60 * 60 * 1000; 
+                
+                if (savedData && savedData.timestamp && (Date.now() - savedData.timestamp < TIEMPO_LIMITE)) {
+                    let cestaGuardada = savedData.items || [];
+                    if(cestaGuardada.length > 0) {
+                        cestaGuardada.forEach(item => addInputRow(item.n, item.c));
+                    } else {
+                        addInputRow('', 1); addInputRow('', 1);
+                    }
+                } else {
+                    localStorage.removeItem(SAVED_CART_KEY);
+                    addInputRow('', 1); addInputRow('', 1);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const datosGuardados = localStorage.getItem(CACHE_KEY);
+            if (datosGuardados) {
+                procesarDatosCSV(datosGuardados);
+                setTimeout(() => { fetch(URL_EXCEL).then(res => res.text()).then(data => { if (data !== datosGuardados) { localStorage.setItem(CACHE_KEY, data); procesarDatosCSV(data); } }).catch(e => console.log("Modo sin conexión.")); }, 1000);
+            } else {
+                fetch(URL_EXCEL).then(res => res.text()).then(data => { localStorage.setItem(CACHE_KEY, data); procesarDatosCSV(data); }).catch(e => { document.getElementById('status-text').textContent = "❌ ERROR DE CONEXIÓN"; });
+            }
+        });
+
+        function guardarCesta() {
+            const rows = document.querySelectorAll('.product-row');
+            let cesta = [];
+            rows.forEach(r => {
+                const inp = r.querySelector('.product-input').value;
+                const qty = r.querySelector('.qty-input').value;
+                if(inp.trim() !== '') cesta.push({ n: inp, c: qty });
+            });
+            const dataToSave = { items: cesta, timestamp: Date.now() };
+            localStorage.setItem(SAVED_CART_KEY, JSON.stringify(dataToSave));
+        }
+
+        function vaciarCesta() {
+            localStorage.removeItem(SAVED_CART_KEY);
+            inputsContainer.innerHTML = ''; inputCount = 0;
+            addInputRow('', 1); addInputRow('', 1);
+        }
+
+        function redirigirTienda(nombreTienda, urlDestino) {
+            document.getElementById('redirect-tienda').textContent = nombreTienda;
+            const modal = document.getElementById('redirect-modal'), content = document.getElementById('redirect-content'), barra = document.getElementById('loading-bar');
+            modal.classList.remove('hidden'); setTimeout(() => modal.classList.remove('opacity-0'), 10); setTimeout(() => content.classList.remove('scale-95'), 10);
+            barra.style.animation = 'none'; barra.offsetHeight; barra.style.animation = 'loading-bar 3.5s ease-in-out forwards';
+            setTimeout(() => { window.open(urlDestino, '_blank'); modal.classList.add('opacity-0'); content.classList.add('scale-95'); setTimeout(() => modal.classList.add('hidden'), 300); }, 3500); 
+        }
+
+        function evaluarCupon(tienda, subtotal) {
+            let tData = tiendas[tienda];
+            if(tData && tData.cupon && subtotal >= tData.cupon.minimo) {
+                const hoy = new Date().toISOString().split('T')[0];
+                if(hoy <= tData.cupon.expira) return { activo: true, ahorro: subtotal * tData.cupon.porcentaje, codigo: tData.cupon.codigo };
+            }
+            return { activo: false, ahorro: 0, codigo: '' };
+        }
+
+        function addInputRow(nombreVal = '', cantVal = 1) {
+            inputCount++; const div = document.createElement('div'); div.className = 'product-row animate-in fade-in slide-in-from-left-2 duration-300 flex flex-col relative'; div.id = `row-${inputCount}`;
+            div.innerHTML = `<div class="flex gap-2 items-center"><div class="input-wrapper flex-1 flex items-center bg-white rounded-xl border border-slate-200 p-1 focus-within:ring-2 focus-within:ring-mint-200 focus-within:border-mint-200 transition-all overflow-hidden shadow-sm"><span class="pl-2.5 text-slate-300 text-sm">🔍</span><input type="text" list="lista-productos" value="${nombreVal}" onchange="guardarCesta()" class="product-input flex-1 bg-transparent px-2 py-2.5 text-[14px] outline-none font-bold text-slate-700 w-full" placeholder="Buscar producto..."><select onchange="guardarCesta()" class="qty-input bg-slate-50 rounded-lg border border-slate-100 font-black text-mint-700 px-2 py-1 appearance-none mr-1">${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}" ${n==cantVal?'selected':''}>${n}</option>`).join('')}</select></div><button onclick="removeInputRow('${div.id}')" class="bg-red-50 text-red-400 p-2.5 rounded-xl hover:bg-red-500 hover:text-white transition-colors active:scale-90 flex-shrink-0 border border-red-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button></div><div class="error-container"></div>`;
+            inputsContainer.appendChild(div);
+        }
+
+        function removeInputRow(id) { if(document.querySelectorAll('.product-row').length > 1) { document.getElementById(id).remove(); guardarCesta(); } }
+
+        function startOptimization() {
+            const rows = document.querySelectorAll('.product-row'); let buscados = []; let errorEncontrado = false;
+            rows.forEach(r => { const wrapper = r.querySelector('.input-wrapper'); const errBox = r.querySelector('.error-container'); wrapper.classList.remove('ring-2', 'ring-amber-400', 'border-amber-400', 'bg-amber-50'); errBox.innerHTML = ''; });
+            rows.forEach(r => {
+                const inp = r.querySelector('.product-input'), wrapper = r.querySelector('.input-wrapper'), errBox = r.querySelector('.error-container');
+                if(inp && inp.value.trim() !== '') {
+                    const txt = limpiarTexto(inp.value); const qty = parseInt(r.querySelector('.qty-input').value) || 1;
+                    if(!catalogo[txt]) {
+                        const coincidencias = Object.keys(catalogo).filter(k => k.includes(txt));
+                        if(coincidencias.length > 0) { inp.value = catalogo[coincidencias[0]].original; buscados.push({ nombre: coincidencias[0], cantidad: qty }); }
+                        else { errorEncontrado = true; wrapper.classList.add('ring-2', 'ring-amber-400', 'border-amber-400', 'bg-amber-50'); errBox.innerHTML = `<p class="text-red-500 text-[10px] font-bold mt-1 ml-2 flex items-center gap-1"><span class="text-xs">❌</span> No encontrado.</p>`; }
+                    } else { buscados.push({ nombre: txt, cantidad: qty }); }
+                }
+            });
+            if(errorEncontrado || buscados.length === 0) return;
+            
+            // Truco historial móvil
+            if(window.location.hash !== '#resultados') { history.pushState({vista: 'resultados'}, '', '#resultados'); }
+            document.getElementById('search-section').classList.add('hidden'); 
+            mostrarResultados(calcularMejorCesta(buscados));
+        }
+
+        // --- MOTOR INTELIGENTE COMPLETO (CON COMPRA DIVIDIDA Y MÚLTIPLES TIENDAS) ---
+        function calcularMejorCesta(lista) {
+            let opciones = []; const nombresTiendas = Object.keys(tiendas); const N = lista.length;
+            
+            nombresTiendas.forEach(t => {
+                let subOriginal = 0, dist = [], ok = true;
+                lista.forEach(i => { let p = catalogo[i.nombre][t]; if(p && !isNaN(p)) { subOriginal += p*i.cantidad; dist.push({n: catalogo[i.nombre].original, c: i.cantidad, p: p*i.cantidad, t: t, img: catalogo[i.nombre].imagen}); } else ok = false; });
+                if(ok && subOriginal > 0) {
+                    let cupon = evaluarCupon(t, subOriginal), subConDescuento = subOriginal - cupon.ahorro, env = subConDescuento >= tiendas[t].envioGratisDesde ? 0 : tiendas[t].envio;
+                    opciones.push({ tipo: 'unica', titulo: t, total: subConDescuento+env, distribucion: dist, resumen: [{t: t, sOriginal: subOriginal, s: subConDescuento, e: env, u: tiendas[t].envioGratisDesde, cuponInfo: cupon }] });
                 }
             });
 
-            return opciones.sort((a, b) => a.total - b.total).slice(0, 3);
-        }
-
-        function mostrarResultados(opts) {
-            const resDiv = document.getElementById('resultados');
-            if (opts.length === 0) {
-                resDiv.innerHTML = "<p class='text-center text-red-500'>No se encontraron tiendas con todos los productos.</p>";
-                return;
+            if(N > 0 && N <= 8) {
+                for(let i=0; i<nombresTiendas.length; i++) {
+                    for(let j=i+1; j<nombresTiendas.length; j++) {
+                        let t1 = nombresTiendas[i], t2 = nombresTiendas[j], mejorPar = null;
+                        for(let m=1; m<(1<<N)-1; m++) {
+                            let s1O=0, s2O=0, d=[], ok=true;
+                            for(let k=0; k<N; k++) {
+                                let tienda = (m & (1<<k)) === 0 ? t1 : t2, p = catalogo[lista[k].nombre][tienda];
+                                if(p && !isNaN(p)) { if(tienda===t1) s1O += p*lista[k].cantidad; else s2O += p*lista[k].cantidad; d.push({n: catalogo[lista[k].nombre].original, c: lista[k].cantidad, p: p*lista[k].cantidad, t: tienda, img: catalogo[lista[k].nombre].imagen}); } else { ok=false; break; }
+                            }
+                            if(ok && s1O>0 && s2O>0) {
+                                let c1 = evaluarCupon(t1, s1O), s1D = s1O - c1.ahorro, c2 = evaluarCupon(t2, s2O), s2D = s2O - c2.ahorro;
+                                let e1 = s1D >= tiendas[t1].envioGratisDesde ? 0 : tiendas[t1].envio, e2 = s2D >= tiendas[t2].envioGratisDesde ? 0 : tiendas[t2].envio;
+                                if(!mejorPar || (s1D+s2D+e1+e2) < mejorPar.total) { mejorPar = { tipo: 'dividida', titulo: `${t1} + ${t2}`, total: s1D+s2D+e1+e2, distribucion: d, resumen: [{t: t1, sOriginal: s1O, s: s1D, e: e1, u: tiendas[t1].envioGratisDesde, cuponInfo: c1}, {t: t2, sOriginal: s2O, s: s2D, e: e2, u: tiendas[t2].envioGratisDesde, cuponInfo: c2}] }; }
+                            }
+                        }
+                        if(mejorPar) opciones.push(mejorPar);
+                    }
+                }
             }
-
-            resDiv.innerHTML = `<h2 class="text-2xl font-bold text-gray-800 mb-4">Mejores opciones encontradas:</h2>` + 
-            opts.map((o, i) => `
-                <div class="bg-white p-6 rounded-2xl shadow-md border-l-8 ${i === 0 ? 'border-green-500' : 'border-blue-400'} fade-in">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold uppercase tracking-widest text-gray-400">${o.tipo}</span>
-                            <h3 class="text-2xl font-black text-gray-800">${o.tienda}</h3>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-3xl font-black text-green-600">${o.total.toFixed(2)}€</div>
-                            <div class="text-xs text-gray-500">Envío: ${o.envio === 0 ? 'GRATIS' : o.envio + '€'}</div>
-                        </div>
-                    </div>
-                    <button onclick="window.open('${enlacesTiendas[o.tienda]}', '_blank')" class="w-full mt-4 bg-gray-900 text-white font-bold py-3 rounded-xl hover:bg-black transition">
-                        Ir a la tienda
-                    </button>
-                </div>
-            `).join('');
+            return opciones.sort((a,b) => a.total - b.total);
         }
 
-        // Modales
-        function abrirModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
+        // --- RENDERIZADO PREMIUM INTACTO ---
+        function mostrarResultados(opts) {
+            const res = document.getElementById('results-section'); let html = '';
+            if(opts.length > 0) {
+                let maxTotal = opts[opts.length-1].total, ahorro = maxTotal - opts[0].total, msjWa = encodeURIComponent(`¡Acabo de ahorrar ${ahorro.toFixed(2)}€ en mi compra con Cestahorro! 🛒✨ Descúbrelo aquí: https://cestahorro.com`);
+                opts.slice(0, 3).forEach((o, idx) => {
+                    let esG = idx === 0, esComoda = (idx === 1 && opts[0].tipo === 'dividida' && o.tipo === 'unica' && (o.total - opts[0].total <= 1.00));
+                    let borderClass = esG ? 'bg-white border-accent-gold border-4 shadow-[0_10px_30px_rgba(245,158,11,0.3)]' : (esComoda ? 'bg-white border-accent-gold border-2 shadow-lg mt-6' : 'bg-white/80 border-slate-100 border-2 backdrop-blur-sm mt-6');
+                    let ribbonHTML = '';
+                    if (esG && ahorro > 1) ribbonHTML = `<div class="absolute top-6 -right-14 w-52 bg-accent-gold text-white text-[10px] font-black py-1.5 text-center rotate-45 shadow-md z-10 uppercase tracking-widest border-b-2 border-amber-600 drop-shadow-md whitespace-nowrap">¡Ahorras ${ahorro.toFixed(2)}€!</div>`;
+                    else if (esComoda) ribbonHTML = `<div class="absolute top-6 -right-14 w-52 bg-accent-gold text-white text-[10px] font-black py-1.5 text-center rotate-45 shadow-md z-10 uppercase tracking-widest border-b-2 border-amber-600 drop-shadow-md whitespace-nowrap">⭐ MÁS CÓMODA</div>`;
 
-        // Carga inicial
-        cargarDatos();
+                    html += `
+                    <div class="${borderClass} p-6 rounded-[40px] relative overflow-hidden animate-in fade-in slide-in-from-bottom-5">
+                        ${ribbonHTML}
+                        <div class="text-center mb-6 mt-2">
+                            <span class="text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter shadow-inner ${o.tipo === 'unica' ? 'bg-slate-100 text-slate-500' : 'bg-accent-violet/10 text-accent-violet'}">${o.tipo === 'unica' ? '📦 Entrega única' : '✂️ Compra dividida'}</span>
+                            <h3 class="text-xl font-black mt-4 text-slate-900 leading-tight tracking-tighter">${o.titulo}</h3>
+                            <div class="text-5xl font-black mt-2.5 ${esG ? 'text-mint-600' : 'text-slate-900'} tracking-tighter">${o.total.toFixed(2)}<span class="text-2xl ml-1">€</span></div>
+                        </div>
+                        ${esG ? `<div class="mb-6 flex justify-center"><a href="https://wa.me/?text=${msjWa}" target="_blank" class="inline-flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold text-[10px] py-2 px-5 rounded-full shadow-md shadow-green-200 hover:bg-[#128C7E] transition-all active:scale-95 uppercase tracking-wider"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg> COMPARTIR AHORRO</a></div>` : ''}
+
+                        ${o.resumen.map(r => {
+                            let pds = o.distribucion.filter(x => x.t === r.t), faltaParaGratis = r.u - r.s, tDesc = r.s + r.e;
+                            let htmlEnvio = r.e === 0 ? `<span class="text-[10px] font-black text-mint-800 bg-mint-100 px-3 py-1.5 rounded-full whitespace-nowrap">🎉 ENVÍO GRATIS</span>` : `<div class="text-right flex flex-col items-end"><span class="text-[11px] font-bold text-slate-500 mb-1">+${r.e.toFixed(2)}€ ENVÍO</span></div>`;
+
+                            let trucoEnvio = '';
+                            if (faltaParaGratis > 0 && faltaParaGratis <= 4.99) {
+                                trucoEnvio = `<div class="mb-4 bg-amber-50 border border-amber-200 p-3 rounded-xl flex gap-2 items-start shadow-sm"><span class="text-amber-500 text-lg leading-none">💡</span><p class="text-[10px] text-amber-800 font-bold leading-tight pt-0.5">¡Truco! Te faltan solo <span class="font-black">${faltaParaGratis.toFixed(2)}€</span> para envío gratis. Añade tiritas o toallitas y ahorra los ${r.e.toFixed(2)}€ del envío.</p></div>`;
+                            }
+
+                            return `
+                            <div class="bg-slate-50/80 rounded-3xl p-5 mb-4 border border-slate-100 text-left shadow-inner">
+                                <div class="flex flex-wrap justify-between items-start border-b border-slate-200 pb-4 mb-4 gap-3">
+                                    <span class="text-[14px] font-extrabold text-slate-900 uppercase tracking-widest pt-1">${r.t}</span>
+                                    ${htmlEnvio}
+                                </div>
+                                
+                                ${trucoEnvio}
+
+                                <div class="space-y-3 mb-4">
+                                    ${pds.map(p => `
+                                        <div class="flex items-center justify-between text-xs font-medium text-slate-700 bg-white p-2.5 rounded-2xl border border-slate-100 shadow-sm">
+                                            <div class="flex items-center gap-3 w-3/4">
+                                                ${p.img ? `<img src="${p.img}" class="w-12 h-12 rounded-xl object-contain bg-slate-50 border border-slate-100 p-1 flex-shrink-0" onerror="this.outerHTML='<div class=\\'w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 text-lg flex-shrink-0\\'>💊</div>'">` : `<div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 text-lg flex-shrink-0">💊</div>`}
+                                                <span class="leading-tight line-clamp-2"><span class="font-black text-mint-700 bg-mint-50 px-1.5 py-0.5 rounded-md mr-1">${p.c}x</span> <span class="capitalize">${p.n}</span></span>
+                                            </div>
+                                            <span class="font-black text-slate-900 text-sm ml-2 flex-shrink-0">${p.p.toFixed(2)}€</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+
+                                ${r.cuponInfo && r.cuponInfo.activo ? `<div class="mt-4 p-4 rounded-2xl text-center border-2 border-dashed border-mint-300 bg-mint-50/50"><span class="text-[10px] block mb-1">Cupón:</span><span class="text-sm font-black tracking-widest bg-white px-3 py-1.5 rounded-lg border border-mint-100 text-mint-700">${r.cuponInfo.codigo}</span><span class="text-[9px] font-bold text-mint-600 block mt-2">Ahorro: -${r.cuponInfo.ahorro.toFixed(2)}€</span></div>` : ''}
+                                
+                                <div class="border-t border-slate-200 mt-4 pt-4 flex justify-between items-center bg-white -mx-5 -mb-5 p-5 rounded-b-3xl">
+                                    <span class="text-[10px] font-bold text-slate-500 uppercase">Total tienda:</span>
+                                    <span class="text-lg font-black text-slate-950">${tDesc.toFixed(2)}€</span>
+                                </div>
+                                
+                                <a href="#" onclick="redirigirTienda('${r.t}', '${enlacesTiendas[r.t] || '#'}'); return false;" class="mt-5 flex items-center justify-center w-full bg-slate-900 text-white font-bold text-[11px] py-4 rounded-2xl uppercase tracking-widest transition-all shadow-md hover:bg-mint-600 active:scale-95">🛒 Ir a ${r.t} ➔</a>
+                            </div>`;
+                        }).join('')}
+                    </div>`;
+                });
+            }
+            html += `<button onclick="window.history.back()" class="w-full text-slate-400 font-bold text-[10px] py-4 uppercase tracking-widest mt-4">← Nueva búsqueda</button>`;
+            res.innerHTML = html; res.classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- GESTIÓN DEL BOTÓN ATRÁS DEL MÓVIL ---
+        window.addEventListener('popstate', function(event) {
+            if(window.location.hash !== '#resultados') {
+                const resultsSection = document.getElementById('results-section');
+                const searchSection = document.getElementById('search-section');
+                if (!resultsSection.classList.contains('hidden')) {
+                    resultsSection.classList.add('hidden');
+                    searchSection.classList.remove('hidden');
+                }
+            }
+        });
     </script>
 </body>
 </html>
